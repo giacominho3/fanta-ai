@@ -2,7 +2,6 @@ import React from 'react';
 import { Upload, Settings, Zap, Brain } from 'lucide-react';
 import { theme, gradients } from '../theme/theme';
 import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
 import Grid from '../components/ui/Grid';
 import { Heading, Text } from '../components/ui/Typography';
 
@@ -76,14 +75,24 @@ const HomePage = ({
             marginBottom: theme.spacing[6] 
           }}>
             <Brain size={64} color={theme.colors.primary[500]} />
-            <Heading level={1} style={{ fontSize: theme.typography.fontSize['6xl'] }}>
+            <Heading level={1} style={{ 
+              fontSize: theme.typography.fontSize['6xl'],
+              fontWeight: theme.typography.fontWeight.extrabold,
+              background: `linear-gradient(135deg, ${theme.colors.primary[400]}, ${theme.colors.accent.cyan})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               FantaAI
             </Heading>
           </div>
-          <Text size="xl" color="secondary" style={{ marginBottom: theme.spacing[2] }}>
+          <Text size="xl" color="secondary" style={{ 
+            marginBottom: theme.spacing[2],
+            fontWeight: theme.typography.fontWeight.medium
+          }}>
             L'assistente intelligente per il tuo fantacalcio
           </Text>
-          <Text color="muted">
+          <Text color="muted" style={{ fontWeight: theme.typography.fontWeight.light }}>
             Analisi avanzate • Insights AI • Gestione completa dell'asta
           </Text>
         </div>
@@ -95,58 +104,84 @@ const HomePage = ({
               key={card.id}
               variant="glass"
               hover={card.available}
-              onClick={() => handleCardClick(card.route)}
+              onClick={() => card.available && handleCardClick(card.route)}
               style={{
                 opacity: card.available ? 1 : 0.6,
-                cursor: card.available ? 'pointer' : 'default',
-                transition: theme.transitions.base,
-                ...(card.available && {
-                  ':hover': {
-                    background: gradients.elevated,
-                    transform: 'scale(1.05)',
-                  }
-                })
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
-              <card.icon 
-                size={64} 
-                color={card.color} 
-                style={{ 
-                  margin: `0 auto ${theme.spacing[6]} auto`, 
-                  display: 'block' 
-                }} 
-              />
-              
-              <Heading level={3} style={{ marginBottom: theme.spacing[4] }}>
-                {card.title}
-              </Heading>
-              
-              <Text color="secondary" style={{ marginBottom: theme.spacing[6] }}>
-                {card.description}
-              </Text>
-              
-              <div style={{ 
-                fontSize: theme.typography.fontSize.sm, 
-                color: card.color, 
-                marginBottom: theme.spacing[4] 
-              }}>
-                {card.features.map((feature, index) => (
-                  <div key={index}>• {feature}</div>
-                ))}
+              {/* Card Content */}
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <card.icon 
+                  size={64} 
+                  color={card.color} 
+                  style={{ 
+                    margin: `0 auto ${theme.spacing[6]} auto`, 
+                    display: 'block',
+                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
+                  }} 
+                />
+                
+                <Heading level={3} style={{ 
+                  marginBottom: theme.spacing[4],
+                  fontWeight: theme.typography.fontWeight.semibold
+                }}>
+                  {card.title}
+                </Heading>
+                
+                <Text color="secondary" style={{ 
+                  marginBottom: theme.spacing[6],
+                  lineHeight: theme.typography.lineHeight.relaxed
+                }}>
+                  {card.description}
+                </Text>
+                
+                <div style={{ 
+                  fontSize: theme.typography.fontSize.sm, 
+                  color: card.color, 
+                  marginBottom: theme.spacing[4],
+                  textAlign: 'left'
+                }}>
+                  {card.features.map((feature, index) => (
+                    <div key={index} style={{ 
+                      marginBottom: theme.spacing[1],
+                      fontWeight: theme.typography.fontWeight.medium
+                    }}>
+                      • {feature}
+                    </div>
+                  ))}
+                </div>
+
+                {card.statusText && (
+                  <div style={{
+                    fontSize: theme.typography.fontSize.xs,
+                    color: card.available ? theme.colors.primary[300] : theme.colors.accent.yellow,
+                    background: card.available 
+                      ? 'rgba(34, 197, 94, 0.2)' 
+                      : 'rgba(245, 158, 11, 0.2)',
+                    borderRadius: theme.borderRadius.lg,
+                    padding: theme.spacing[3],
+                    fontWeight: theme.typography.fontWeight.medium,
+                    border: `1px solid ${card.available ? theme.colors.primary[500] : theme.colors.accent.yellow}`
+                  }}>
+                    {card.statusText}
+                  </div>
+                )}
               </div>
 
-              {card.statusText && (
+              {/* Gradient Overlay for Available Cards */}
+              {card.available && (
                 <div style={{
-                  fontSize: theme.typography.fontSize.xs,
-                  color: card.available ? theme.colors.primary[300] : theme.colors.accent.yellow,
-                  background: card.available 
-                    ? 'rgba(34, 197, 94, 0.2)' 
-                    : 'rgba(245, 158, 11, 0.2)',
-                  borderRadius: theme.borderRadius.lg,
-                  padding: theme.spacing[2]
-                }}>
-                  {card.statusText}
-                </div>
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: `linear-gradient(135deg, ${card.color}10, transparent)`,
+                  zIndex: 1,
+                  pointerEvents: 'none'
+                }} />
               )}
             </Card>
           ))}
@@ -154,46 +189,57 @@ const HomePage = ({
 
         {/* Stats */}
         {players.length > 0 && (
-          <Card 
-            variant="glass" 
-            style={{ 
-              marginTop: theme.spacing[12],
-              textAlign: 'center'
-            }}
-          >
-            <Grid cols={3} gap={4}>
-              <div>
-                <div style={{ 
-                  fontSize: theme.typography.fontSize['2xl'], 
-                  fontWeight: theme.typography.fontWeight.bold, 
-                  color: theme.colors.primary[500] 
-                }}>
-                  {players.length}
+          <div style={{ marginTop: theme.spacing[12] }}>
+            <Card variant="glass">
+              <Heading level={3} style={{ 
+                marginBottom: theme.spacing[6],
+                fontWeight: theme.typography.fontWeight.semibold
+              }}>
+                Stato del Sistema
+              </Heading>
+              <Grid cols={3} gap={4}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ 
+                    fontSize: theme.typography.fontSize['3xl'], 
+                    fontWeight: theme.typography.fontWeight.bold, 
+                    color: theme.colors.primary[500],
+                    marginBottom: theme.spacing[2]
+                  }}>
+                    {players.length}
+                  </div>
+                  <Text size="sm" color="muted" style={{ fontWeight: theme.typography.fontWeight.medium }}>
+                    Giocatori Caricati
+                  </Text>
                 </div>
-                <Text size="sm" color="muted">Giocatori Caricati</Text>
-              </div>
-              <div>
-                <div style={{ 
-                  fontSize: theme.typography.fontSize['2xl'], 
-                  fontWeight: theme.typography.fontWeight.bold, 
-                  color: theme.colors.accent.cyan 
-                }}>
-                  {budget}
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ 
+                    fontSize: theme.typography.fontSize['3xl'], 
+                    fontWeight: theme.typography.fontWeight.bold, 
+                    color: theme.colors.accent.cyan,
+                    marginBottom: theme.spacing[2]
+                  }}>
+                    {budget}
+                  </div>
+                  <Text size="sm" color="muted" style={{ fontWeight: theme.typography.fontWeight.medium }}>
+                    Budget Disponibile
+                  </Text>
                 </div>
-                <Text size="sm" color="muted">Budget Disponibile</Text>
-              </div>
-              <div>
-                <div style={{ 
-                  fontSize: theme.typography.fontSize['2xl'], 
-                  fontWeight: theme.typography.fontWeight.bold, 
-                  color: theme.colors.accent.orange 
-                }}>
-                  Ready
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ 
+                    fontSize: theme.typography.fontSize['3xl'], 
+                    fontWeight: theme.typography.fontWeight.bold, 
+                    color: theme.colors.accent.orange,
+                    marginBottom: theme.spacing[2]
+                  }}>
+                    Ready
+                  </div>
+                  <Text size="sm" color="muted" style={{ fontWeight: theme.typography.fontWeight.medium }}>
+                    Stato Sistema
+                  </Text>
                 </div>
-                <Text size="sm" color="muted">Stato Sistema</Text>
-              </div>
-            </Grid>
-          </Card>
+              </Grid>
+            </Card>
+          </div>
         )}
       </div>
     </div>

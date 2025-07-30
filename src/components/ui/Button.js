@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { theme } from '../../theme/theme';
 
 const Button = ({ 
@@ -8,48 +8,42 @@ const Button = ({
   disabled = false,
   onClick,
   className = '',
+  style = {},
   ...props 
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+
   const variants = {
     primary: {
-      background: theme.colors.primary[500],
+      background: isHovered && !disabled ? theme.colors.primary[600] : theme.colors.primary[500],
       color: 'white',
       border: 'none',
-      ':hover': {
-        background: theme.colors.primary[600],
-      }
+      boxShadow: isHovered && !disabled ? theme.shadows.hover : theme.shadows.base,
     },
     secondary: {
-      background: theme.colors.secondary[600],
+      background: isHovered && !disabled ? theme.colors.secondary[700] : theme.colors.secondary[600],
       color: 'white',
       border: 'none',
-      ':hover': {
-        background: theme.colors.secondary[700],
-      }
+      boxShadow: isHovered && !disabled ? theme.shadows.hover : theme.shadows.base,
     },
     outline: {
-      background: 'transparent',
+      background: isHovered && !disabled ? theme.colors.dark.surface.primary : 'transparent',
       color: theme.colors.dark.text.primary,
       border: `1px solid ${theme.colors.dark.border.primary}`,
-      ':hover': {
-        background: theme.colors.dark.surface.primary,
-      }
+      boxShadow: isHovered && !disabled ? theme.shadows.md : 'none',
     },
     ghost: {
-      background: 'transparent',
-      color: theme.colors.dark.text.muted,
+      background: isHovered && !disabled ? theme.colors.dark.surface.primary : 'transparent',
+      color: isHovered && !disabled ? theme.colors.dark.text.primary : theme.colors.dark.text.muted,
       border: 'none',
-      ':hover': {
-        color: theme.colors.dark.text.primary,
-      }
+      boxShadow: 'none',
     },
     danger: {
-      background: theme.colors.accent.red,
+      background: isHovered && !disabled ? '#dc2626' : theme.colors.accent.red,
       color: 'white',
       border: 'none',
-      ':hover': {
-        background: '#dc2626',
-      }
+      boxShadow: isHovered && !disabled ? theme.shadows.hover : theme.shadows.base,
     }
   };
 
@@ -68,26 +62,36 @@ const Button = ({
     }
   };
 
-  const style = {
+  const buttonStyle = {
     ...variants[variant],
     ...sizes[size],
     borderRadius: theme.borderRadius.lg,
     fontWeight: theme.typography.fontWeight.medium,
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
-    transition: theme.transitions.base,
+    transition: theme.transitions.fast,
     display: 'inline-flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: theme.spacing[2],
     fontFamily: theme.typography.fontFamily.sans.join(', '),
+    transform: isHovered && !disabled ? 'translateY(-1px)' : 'translateY(0)',
+    ...style,
   };
 
   return (
     <button
-      style={style}
+      style={buttonStyle}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       className={className}
+      onMouseEnter={() => !disabled && setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsPressed(false);
+      }}
+      onMouseDown={() => !disabled && setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
       {...props}
     >
       {children}

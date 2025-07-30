@@ -1,4 +1,3 @@
-// src/theme/theme.js
 export const theme = {
   colors: {
     // Primary palette
@@ -80,7 +79,7 @@ export const theme = {
   
   typography: {
     fontFamily: {
-      sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      sans: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       mono: ['SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', 'monospace'],
     },
     fontSize: {
@@ -96,10 +95,12 @@ export const theme = {
       '6xl': '3.75rem',
     },
     fontWeight: {
+      light: '300',
       normal: '400',
       medium: '500',
       semibold: '600',
       bold: '700',
+      extrabold: '800',
     },
     lineHeight: {
       tight: '1.25',
@@ -141,6 +142,7 @@ export const theme = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    hover: '0 10px 25px rgba(0, 0, 0, 0.2)',
   },
   
   transitions: {
