@@ -52,13 +52,14 @@ function App() {
         nome: row.Nome || row.NOME || '',
         ruolo: row.R || row.Ruolo || '',
         rm: row.RM || row['R.M'] || row.Ruolo || '',
+        rmArray: (row.RM || row['R.M'] || row.Ruolo || '').split(';').map(r => r.trim()),
         squadra: row.Squadra || row.SQUADRA || '',
         fvm: parseFloat(row['FVM M'] || row.FVM || row['Fvm M'] || 0),
         quotazione: parseFloat(row.Qt || row.Quotazione || 0),
       })).filter(player => player.nome && player.nome.trim() !== '');
       
       setPlayers(processedPlayers);
-      setFilteredPlayers(processedPlayers.filter(p => p.rm === 'T'));
+      setFilteredPlayers(processedPlayers.filter(p => p.rmArray.includes('T')));
       addNotification('success', `${processedPlayers.length} giocatori caricati da ${file.name}`);
       
       console.log('Giocatori processati:', processedPlayers.slice(0, 5));
@@ -85,7 +86,7 @@ function App() {
 
   const filterPlayersByRole = (role) => {
     setSelectedRole(role);
-    let filtered = players.filter(player => player.rm === role);
+    let filtered = players.filter(player => player.rmArray.includes(role));
     
     if (searchTerm) {
       filtered = filtered.filter(player => 
@@ -101,7 +102,7 @@ function App() {
     if (term) {
       const filtered = players.filter(player => 
         player.nome.toLowerCase().includes(term.toLowerCase()) &&
-        player.rm === selectedRole
+        player.rmArray.includes(selectedRole)
       );
       setFilteredPlayers(filtered);
     } else {
@@ -157,11 +158,11 @@ function App() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #581c87, #1e3a8a, #312e81)',
+        background: 'linear-gradient(135deg, #171717, #404040, #525252)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white',
+        color: '#f5f5f5',
         padding: '2rem'
       }}>
         <div style={{ maxWidth: '1200px', textAlign: 'center' }}>
@@ -169,13 +170,13 @@ function App() {
           {/* Header */}
           <div style={{ marginBottom: '3rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <Brain size={64} color="#22d3ee" />
+              <Brain size={64} color="#03a11b" />
               <h1 style={{ fontSize: '4rem', fontWeight: 'bold', margin: 0 }}>FantaAI</h1>
             </div>
-            <p style={{ fontSize: '1.25rem', color: '#a5f3fc', margin: '0 0 0.5rem 0' }}>
+            <p style={{ fontSize: '1.25rem', color: '#d4d4d4', margin: '0 0 0.5rem 0' }}>
               L'assistente intelligente per il tuo fantacalcio
             </p>
-            <p style={{ color: '#d8b4fe', margin: 0 }}>
+            <p style={{ color: '#a3a3a3', margin: 0 }}>
               Analisi avanzate • Insights AI • Gestione completa dell'asta
             </p>
           </div>
@@ -183,7 +184,7 @@ function App() {
           {/* Cards */}
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+            gridTemplateColumns: 'repeat(3, 1fr)', 
             gap: '2rem'
           }}>
             
@@ -208,14 +209,14 @@ function App() {
                 e.target.style.transform = 'scale(1)';
               }}
             >
-              <Upload size={64} color="#22d3ee" style={{ margin: '0 auto 1.5rem auto', display: 'block' }} />
+              <Upload size={64} color="#03a11b" style={{ margin: '0 auto 1.5rem auto', display: 'block' }} />
               <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
                 Caricamento Dati
               </h3>
-              <p style={{ color: '#e9d5ff', marginBottom: '1.5rem' }}>
+              <p style={{ color: '#d4d4d4', marginBottom: '1.5rem' }}>
                 Importa quotazioni dai file Excel di Fantacalcio.it
               </p>
-              <div style={{ fontSize: '0.875rem', color: '#67e8f9' }}>
+              <div style={{ fontSize: '0.875rem', color: '#03a11b' }}>
                 <div>• Quotazioni ufficiali</div>
                 <div>• Dati storici performance</div>
                 <div>• Import automatico</div>
@@ -250,7 +251,7 @@ function App() {
               <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
                 Configurazione Listone
               </h3>
-              <p style={{ color: '#e9d5ff', marginBottom: '1.5rem' }}>
+              <p style={{ color: '#d4d4d4', marginBottom: '1.5rem' }}>
                 Personalizza priorità e budget per ogni giocatore
               </p>
               <div style={{ fontSize: '0.875rem', color: '#86efac', marginBottom: '1rem' }}>
@@ -295,7 +296,7 @@ function App() {
               <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
                 Asta Live
               </h3>
-              <p style={{ color: '#e9d5ff', marginBottom: '1.5rem' }}>
+              <p style={{ color: '#d4d4d4', marginBottom: '1.5rem' }}>
                 Assistente intelligente durante l'asta
               </p>
               <div style={{ fontSize: '0.875rem', color: '#fdba74', marginBottom: '1rem' }}>
@@ -305,8 +306,8 @@ function App() {
               </div>
               <div style={{
                 fontSize: '0.75rem',
-                color: '#67e8f9',
-                background: 'rgba(6, 182, 212, 0.2)',
+                color: '#03a11b',
+                background: 'rgba(3, 161, 27, 0.2)',
                 borderRadius: '0.5rem',
                 padding: '0.5rem'
               }}>
@@ -330,16 +331,16 @@ function App() {
               textAlign: 'center'
             }}>
               <div>
-                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#22d3ee' }}>{players.length}</div>
-                <div style={{ fontSize: '0.875rem', color: '#d8b4fe' }}>Giocatori Caricati</div>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#03a11b' }}>{players.length}</div>
+                <div style={{ fontSize: '0.875rem', color: '#a3a3a3' }}>Giocatori Caricati</div>
               </div>
               <div>
                 <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4ade80' }}>{budget}</div>
-                <div style={{ fontSize: '0.875rem', color: '#d8b4fe' }}>Budget Disponibile</div>
+                <div style={{ fontSize: '0.875rem', color: '#a3a3a3' }}>Budget Disponibile</div>
               </div>
               <div>
                 <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fb923c' }}>Ready</div>
-                <div style={{ fontSize: '0.875rem', color: '#d8b4fe' }}>Stato Sistema</div>
+                <div style={{ fontSize: '0.875rem', color: '#a3a3a3' }}>Stato Sistema</div>
               </div>
             </div>
           )}
@@ -353,7 +354,7 @@ function App() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #581c87, #1e3a8a, #312e81)',
+        background: 'linear-gradient(135deg, #171717, #404040, #525252)',
         padding: '2rem'
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -365,7 +366,7 @@ function App() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                color: 'white',
+                color: '#f5f5f5',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -375,7 +376,7 @@ function App() {
               <ArrowLeft size={20} />
               Torna alla Home
             </button>
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f5f5f5', margin: 0 }}>
               Caricamento Dati
             </h1>
             <div></div>
@@ -389,21 +390,21 @@ function App() {
             border: '1px solid rgba(255, 255, 255, 0.2)'
           }}>
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <Upload size={64} color="#22d3ee" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
+              <Upload size={64} color="#03a11b" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f5f5f5', marginBottom: '0.5rem' }}>
                 Carica Quotazioni Fantacalcio.it
               </h2>
-              <p style={{ color: '#d8b4fe' }}>
+              <p style={{ color: '#a3a3a3' }}>
                 Seleziona il file Excel con le quotazioni ufficiali della stagione corrente
               </p>
             </div>
 
             <div style={{
-              border: '2px dashed rgba(34, 211, 238, 0.5)',
+              border: '2px dashed rgba(3, 161, 27, 0.5)',
               borderRadius: '0.75rem',
               padding: '3rem',
               textAlign: 'center',
-              background: 'rgba(34, 211, 238, 0.05)'
+              background: 'rgba(3, 161, 27, 0.05)'
             }}>
               <input
                 type="file"
@@ -414,11 +415,11 @@ function App() {
                 disabled={loading}
               />
               <label htmlFor="fileUpload" style={{ cursor: loading ? 'not-allowed' : 'pointer' }}>
-                <Upload size={48} color="#22d3ee" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
-                <p style={{ color: 'white', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                <Upload size={48} color="#03a11b" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
+                <p style={{ color: '#f5f5f5', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
                   {loading ? 'Caricamento in corso...' : 'Clicca per caricare il file Excel'}
                 </p>
-                <p style={{ color: '#d8b4fe', fontSize: '0.875rem' }}>
+                <p style={{ color: '#a3a3a3', fontSize: '0.875rem' }}>
                   Supporta file .xlsx e .xls da Fantacalcio.it
                 </p>
               </label>
@@ -435,7 +436,7 @@ function App() {
                 <h3 style={{ color: '#4ade80', fontWeight: '600', marginBottom: '0.5rem' }}>
                   ✓ Dati caricati con successo
                 </h3>
-                <p style={{ color: 'white', marginBottom: '1rem' }}>
+                <p style={{ color: '#f5f5f5', marginBottom: '1rem' }}>
                   {players.length} giocatori importati dal file Excel
                 </p>
                 <button 
@@ -465,7 +466,7 @@ function App() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)'
+        background: 'linear-gradient(135deg, #171717, #404040, #525252)'
       }}>
         
         {/* Header */}
@@ -482,7 +483,7 @@ function App() {
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: 'rgba(255, 255, 255, 0.7)',
+                  color: 'rgba(245, 245, 245, 0.7)',
                   cursor: 'pointer'
                 }}
               >
@@ -492,7 +493,7 @@ function App() {
               {/* Search */}
               <div style={{ position: 'relative' }}>
                 <Search size={16} style={{
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'rgba(245, 245, 245, 0.5)',
                   position: 'absolute',
                   left: '0.75rem',
                   top: '50%',
@@ -504,14 +505,14 @@ function App() {
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                   style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(245, 245, 245, 0.1)',
+                    border: '1px solid rgba(245, 245, 245, 0.2)',
                     borderRadius: '9999px',
                     paddingLeft: '2.5rem',
                     paddingRight: '1rem',
                     paddingTop: '0.5rem',
                     paddingBottom: '0.5rem',
-                    color: 'white',
+                    color: '#f5f5f5',
                     width: '16rem',
                     fontSize: '0.875rem'
                   }}
@@ -533,8 +534,8 @@ function App() {
                     border: 'none',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    background: selectedRole === role.key ? '#22d3ee' : 'rgba(255, 255, 255, 0.1)',
-                    color: selectedRole === role.key ? 'black' : 'rgba(255, 255, 255, 0.7)'
+                    background: selectedRole === role.key ? '#03a11b' : 'rgba(245, 245, 245, 0.1)',
+                    color: selectedRole === role.key ? 'white' : 'rgba(245, 245, 245, 0.7)'
                   }}
                 >
                   {role.label}
@@ -547,13 +548,13 @@ function App() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'rgba(245, 245, 245, 0.1)',
                 borderRadius: '9999px',
                 padding: '0.5rem 1rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
+                border: '1px solid rgba(245, 245, 245, 0.2)'
               }}>
                 <DollarSign size={16} color="#4ade80" />
-                <span style={{ color: 'white', fontWeight: '600' }}>{budget}</span>
+                <span style={{ color: '#f5f5f5', fontWeight: '600' }}>{budget}</span>
               </div>
               <button 
                 onClick={saveConfigurations}
@@ -588,8 +589,8 @@ function App() {
                 Reset
               </button>
               <button style={{
-                background: '#22d3ee',
-                color: 'black',
+                background: '#03a11b',
+                color: 'white',
                 padding: '0.5rem 1rem',
                 borderRadius: '9999px',
                 fontWeight: '500',
@@ -609,7 +610,7 @@ function App() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ width: '0.75rem', height: '0.75rem', background: '#fb923c', borderRadius: '50%' }}></div>
-              <h2 style={{ color: 'white', fontSize: '1.125rem', fontWeight: '600', margin: 0 }}>
+              <h2 style={{ color: '#f5f5f5', fontSize: '1.125rem', fontWeight: '600', margin: 0 }}>
                 {selectedRole === 'T' ? 'Trequartisti' : 
                  selectedRole === 'A' ? 'Attaccanti' :
                  selectedRole === 'C' ? 'Centrocampisti' :
@@ -623,13 +624,13 @@ function App() {
                  selectedRole === 'Por' ? 'Portieri' :
                  selectedRole === 'Pc' ? 'Prima Punta' : selectedRole} Top
               </h2>
-              <span style={{ color: 'rgba(255, 255, 255, 0.5)' }}>({filteredPlayers.length})</span>
+              <span style={{ color: 'rgba(245, 245, 245, 0.5)' }}>({filteredPlayers.length})</span>
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
-              <div style={{ background: 'rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', padding: '0.75rem' }}>
-                <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Totale giocatori: </span>
-                <span style={{ color: 'white', fontWeight: '600' }}>{players.length}</span>
+              <div style={{ background: 'rgba(245, 245, 245, 0.1)', borderRadius: '0.5rem', padding: '0.75rem' }}>
+                <span style={{ color: 'rgba(245, 245, 245, 0.7)' }}>Totale giocatori: </span>
+                <span style={{ color: '#f5f5f5', fontWeight: '600' }}>{players.length}</span>
               </div>
               <div style={{ background: 'rgba(34, 197, 94, 0.2)', borderRadius: '0.5rem', padding: '0.75rem' }}>
                 <span style={{ color: '#86efac' }}>Configurati: </span>
@@ -653,9 +654,9 @@ function App() {
             gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
             gap: '0.75rem',
             fontSize: '0.75rem',
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: 'rgba(245, 245, 245, 0.7)',
             fontWeight: '500',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+            borderBottom: '1px solid rgba(245, 245, 245, 0.1)'
           }}>
             <div>Nome</div>
             <div>Prezzo</div>
@@ -680,12 +681,12 @@ function App() {
             borderRadius: '0 0 0.75rem 0.75rem',
             overflow: 'hidden'
           }}>
-            {filteredPlayers.slice(0, 20).map((player, index) => {
+            {filteredPlayers.map((player, index) => {
               const isConfigured = playerConfigs[player.id] && Object.values(playerConfigs[player.id]).some(val => val && val !== '');
               
               return (
                 <div key={player.id} style={{
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                  borderBottom: '1px solid rgba(245, 245, 245, 0.05)',
                   padding: '0.75rem',
                   background: isConfigured ? 'rgba(34, 197, 94, 0.05)' : 'transparent',
                   borderLeft: isConfigured ? '2px solid #4ade80' : 'none'
@@ -702,23 +703,23 @@ function App() {
                       <div style={{
                         width: '1.5rem',
                         height: '1.5rem',
-                        background: 'rgba(255, 255, 255, 0.1)',
+                        background: 'rgba(245, 245, 245, 0.1)',
                         borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'rgba(255, 255, 255, 0.7)',
+                        color: 'rgba(245, 245, 245, 0.7)',
                         fontSize: '0.75rem'
                       }}>
                         {index + 1}
                       </div>
-                      <Bookmark size={12} color={isConfigured ? '#4ade80' : 'rgba(255, 255, 255, 0.3)'} />
+                      <Bookmark size={12} color={isConfigured ? '#4ade80' : 'rgba(245, 245, 245, 0.3)'} />
                       
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <div style={{
                           width: '2rem',
                           height: '2rem',
-                          background: 'linear-gradient(135deg, #c084fc, #22d3ee)',
+                          background: 'linear-gradient(135deg, #c084fc, #03a11b)',
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
@@ -732,7 +733,7 @@ function App() {
                         
                         <div>
                           <div style={{
-                            color: 'rgba(255, 255, 255, 0.7)',
+                            color: 'rgba(245, 245, 245, 0.7)',
                             fontSize: '0.75rem',
                             display: 'flex',
                             alignItems: 'center',
@@ -741,7 +742,7 @@ function App() {
                             {player.squadra}
                             {isConfigured && <div style={{ width: '0.5rem', height: '0.5rem', background: '#4ade80', borderRadius: '50%' }}></div>}
                           </div>
-                          <div style={{ color: '#22d3ee', fontWeight: '600', fontSize: '0.875rem' }}>
+                          <div style={{ color: '#03a11b', fontWeight: '600', fontSize: '0.875rem' }}>
                             {player.nome}
                           </div>
                         </div>
@@ -817,13 +818,13 @@ function App() {
                         placeholder="0"
                         style={{
                           background: 'transparent',
-                          color: 'white',
+                          color: '#f5f5f5',
                           textAlign: 'center',
                           borderRadius: '0.25rem',
                           padding: '0.25rem 0.5rem',
                           width: '3rem',
                           fontSize: '0.75rem',
-                          border: '1px solid rgba(255, 255, 255, 0.2)'
+                          border: '1px solid rgba(245, 245, 245, 0.2)'
                         }}
                       />
                     </div>
@@ -931,7 +932,7 @@ function App() {
                     </div>
 
                     {/* FMV - FISSO */}
-                    <div style={{ color: 'white', textAlign: 'center', fontWeight: '500', fontSize: '0.875rem' }}>
+                    <div style={{ color: '#f5f5f5', textAlign: 'center', fontWeight: '500', fontSize: '0.875rem' }}>
                       {player.fvm}
                     </div>
 
@@ -1018,7 +1019,7 @@ function App() {
                 background: notification.type === 'success' ? '#22c55e' :
                            notification.type === 'error' ? '#ef4444' :
                            notification.type === 'warning' ? '#f59e0b' : '#3b82f6',
-                color: notification.type === 'warning' ? 'black' : 'white'
+                color: notification.type === 'warning' ? 'black' : '#f5f5f5'
               }}>
                 {notification.message}
               </div>
