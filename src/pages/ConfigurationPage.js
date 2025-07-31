@@ -20,8 +20,8 @@ const ConfigurationPage = ({
   stats
 }) => {
   const tableHeaders = [
-    'Nome', 'Prezzo', 'Budget', 'PMAL', 'Quo', 'Titolar.', 'Affida.',
-    'Fisico', 'FMV Exp.', 'MV', 'FMV', 'Pres.', 'Gol', 'Assist'
+    'Nome', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
+    'Fis', 'FMV Exp.', 'MV', 'FVM', 'Pres', 'Gol', 'Ass'
   ];
 
   // Stesse larghezze del PlayerRow per perfetto allineamento
