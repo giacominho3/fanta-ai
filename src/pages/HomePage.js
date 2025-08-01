@@ -12,7 +12,7 @@ const HomePage = ({
   addNotification = () => {} 
 }) => {
   const handleCardClick = (route) => {
-    if (route === 'configuration' && players.length === 0) {
+    if ((route === 'configuration' || route === 'auction') && players.length === 0) {
       addNotification('warning', 'Carica prima i dati dei giocatori');
       return;
     }
@@ -47,9 +47,10 @@ const HomePage = ({
       description: 'Assistente intelligente durante l\'asta',
       icon: Zap,
       color: theme.colors.accent.orange,
-      features: ['Tracker tempo reale', 'AI insights dinamici', 'Simulatore budget'],
-      available: false,
-      statusText: '🚧 In sviluppo'
+      features: ['Tracker tempo reale', 'Gestione squadre', 'Monitoraggio budget'],
+      available: players.length > 0,
+      route: 'auction',
+      statusText: players.length > 0 ? `✓ Pronto per l'asta` : '⚠️ Carica prima i dati'
     }
   ];
 

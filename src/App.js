@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import HomePage from './pages/HomePage';
 import LoadingPage from './pages/LoadingPage';
 import ConfigurationPage from './pages/ConfigurationPage';
+import AuctionPage from './pages/AuctionPage';
 import NotificationSystem from './components/NotificationSystem';
 import { useNotifications } from './hooks/useNotifications';
 import { usePlayerData } from './hooks/usePlayerData';
@@ -116,6 +117,21 @@ function App() {
             onNavigateHome={() => navigateTo('home')}
             roles={ROLES}
             stats={configurationStats}
+          />
+        );
+      
+      case 'auction':
+        return (
+          <AuctionPage
+            filteredPlayers={filteredPlayers}
+            searchTerm={searchTerm}
+            onSearch={handleSearch}
+            selectedRole={selectedRole}
+            onRoleChange={filterPlayersByRole}
+            getPlayerConfig={getPlayerConfig}
+            onNavigateHome={() => navigateTo('home')}
+            roles={ROLES}
+            players={players}
           />
         );
       
