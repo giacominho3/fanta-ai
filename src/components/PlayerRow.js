@@ -3,6 +3,215 @@ import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
 
+// Mappa dei colori sociali delle squadre di Serie A 2025/26
+const TEAM_COLORS = {
+  // Atalanta - Nerazzurro
+  'Atalanta': {
+    primary: '#1E3A8A', // Blu
+    secondary: '#000000' // Nero
+  },
+  
+  // Bologna - Rossoblù
+  'Bologna': {
+    primary: '#AD0505', // Rosso
+    secondary: '#042AA6' // Blu
+  },
+  
+  // Cagliari - Rossoblù
+  'Cagliari': {
+    primary: '#DC2626', // Rosso
+    secondary: '#1E40AF' // Blu
+  },
+  
+  // Como - Azzurro
+  'Como': {
+    primary: '#FFFFFF', // Bianco
+    secondary: '#1E40AF' // Azzurro più scuro
+  },
+  
+  // Cremonese - Grigio e rosso
+  'Cremonese': {
+    primary: '#6B7280', // Grigio
+    secondary: '#DC2626' // Rosso
+  },
+  
+  // Fiorentina - Viola
+  'Fiorentina': {
+    primary: '#7C3AED', // Viola
+    secondary: '#7C3AED' // Viola più scuro
+  },
+  
+  // Genoa - Rossoblù
+  'Genoa': {
+    primary: '#DC2626', // Rosso
+    secondary: '#1E40AF' // Blu
+  },
+  
+  // Inter - Nerazzurro
+  'Inter': {
+    primary: '#000000', // Nero
+    secondary: '#1E3A8A' // Blu
+  },
+  
+  // Juventus - Bianconero
+  'Juventus': {
+    primary: '#FFFFFF', // Bianco
+    secondary: '#000000' // Nero
+  },
+  
+  // Lazio - Biancoceleste
+  'Lazio': {
+    primary: '#FFFFFF', // Bianco
+    secondary: '#0EA5E9' // Celeste
+  },
+  
+  // Lecce - Giallorosso
+  'Lecce': {
+    primary: '#EAB308', // Giallo
+    secondary: '#DC2626' // Rosso
+  },
+  
+  // Milan - Rossonero
+  'Milan': {
+    primary: '#DC2626', // Rosso
+    secondary: '#000000' // Nero
+  },
+  
+  // Napoli - Azzurro
+  'Napoli': {
+    primary: '#0EA5E9', // Azzurro
+    secondary: '#0284C7' // Azzurro più scuro
+  },
+  
+  // Parma - Gialloblu
+  'Parma': {
+    primary: '#EAB308', // Giallo
+    secondary: '#1E40AF' // Blu
+  },
+  
+  // Pisa - Nerazzurro
+  'Pisa': {
+    primary: '#000000', // Nero
+    secondary: '#1E3A8A' // Blu
+  },
+  
+  // Roma - Giallorosso
+  'Roma': {
+    primary: '#DBA400', // Giallo
+    secondary: '#890000' // Rosso
+  },
+  
+  // Sassuolo - Neroverdi
+  'Sassuolo': {
+    primary: '#000000', // Nero
+    secondary: '#16A34A' // Verde
+  },
+  
+  // Torino - Granata
+  'Torino': {
+    primary: '#7F1D1D', // Granata
+    secondary: '#7F1D1D' // Granata più scuro
+  },
+  
+  // Udinese - Bianconero
+  'Udinese': {
+    primary: '#FFFFFF', // Bianco
+    secondary: '#000000' // Nero
+  },
+  
+  // Verona - Gialloblu
+  'Verona': {
+    primary: '#EAB308', // Giallo
+    secondary: '#1E40AF' // Blu
+  }
+};
+
+// Funzione per ottenere i colori di una squadra
+const getTeamColors = (teamName) => {
+  // Normalizziamo il nome della squadra per gestire varianti
+  const normalizedName = teamName?.trim();
+  
+  // Se troviamo una corrispondenza esatta
+  if (TEAM_COLORS[normalizedName]) {
+    return TEAM_COLORS[normalizedName];
+  }
+  
+  // Controlliamo alcune varianti comuni
+  const teamVariants = {
+    'AC Milan': 'Milan',
+    'FC Inter': 'Inter',
+    'Internazionale': 'Inter',
+    'Juventus FC': 'Juventus',
+    'AS Roma': 'Roma',
+    'SS Lazio': 'Lazio',
+    'SSC Napoli': 'Napoli',
+    'ACF Fiorentina': 'Fiorentina',
+    'Hellas Verona': 'Verona',
+    'US Lecce': 'Lecce',
+    'Torino FC': 'Torino',
+    'Atalanta BC': 'Atalanta',
+    'Bologna FC': 'Bologna',
+    'Genoa CFC': 'Genoa',
+    'Como 1907': 'Como',
+    'US Sassuolo': 'Sassuolo',
+    'Parma FC': 'Parma',
+    'Udinese Calcio': 'Udinese',
+    'Cagliari Calcio': 'Cagliari',
+    'US Cremonese': 'Cremonese',
+    'Pisa SC': 'Pisa'
+  };
+  
+  if (teamVariants[normalizedName]) {
+    return TEAM_COLORS[teamVariants[normalizedName]];
+  }
+  
+  // Se non troviamo la squadra, ritorniamo colori di default
+  return {
+    primary: '#6B7280', // Grigio
+    secondary: '#4B5563' // Grigio più scuro
+  };
+};
+
+// Componente TeamBadge per mostrare i colori della squadra
+const TeamBadge = ({ teamName, size = theme.spacing[8] }) => {
+  const colors = getTeamColors(teamName);
+  
+  return (
+    <div style={{
+      width: size,
+      height: size,
+      borderRadius: '50%',
+      position: 'relative',
+      overflow: 'hidden',
+      border: `2px solid ${theme.colors.dark.border.primary}`,
+      flexShrink: 0,
+      boxShadow: theme.shadows.sm
+    }}>
+      {/* Prima metà - colore primario */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '50%',
+        height: '100%',
+        background: colors.primary,
+        clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)'
+      }} />
+      
+      {/* Seconda metà - colore secondario */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: '50%',
+        height: '100%',
+        background: colors.secondary,
+        clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)'
+      }} />
+    </div>
+  );
+};
+
 const PlayerRow = ({ 
   player, 
   index, 
@@ -100,22 +309,8 @@ const PlayerRow = ({
             minWidth: 0, // Permette il truncate
             flex: 1
           }}>
-            {/* Avatar */}
-            <div style={{
-              width: theme.spacing[8],
-              height: theme.spacing[8],
-              background: `linear-gradient(135deg, ${theme.colors.secondary[400]}, ${theme.colors.primary[500]})`,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: theme.typography.fontWeight.bold,
-              fontSize: theme.typography.fontSize.xs,
-              flexShrink: 0
-            }}>
-              {player.nome.charAt(0)}
-            </div>
+            {/* TeamBadge con colori della squadra invece dell'avatar con iniziale */}
+            <TeamBadge teamName={player.squadra} size={theme.spacing[8]} />
             
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{
