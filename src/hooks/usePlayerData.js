@@ -73,6 +73,8 @@ export const usePlayerData = () => {
         squadra: row.Squadra || row.SQUADRA || '',
         fvm: parseFloat(row['FVM M'] || row.FVM || row['Fvm M'] || 0),
         quotazione: parseFloat(row.Qt || row.Quotazione || 0),
+        // AGGIUNTA: campo per Qt.A M (quotazione attuale)
+        quotazioneAttuale: parseFloat(row['Qt.A M'] || row['Qt A M'] || row['Qt.AM'] || row['QtAM'] || 0),
         // Metadati per la persistenza
         loadedAt: new Date().toISOString(),
         fileName: file.name

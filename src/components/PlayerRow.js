@@ -10,11 +10,12 @@ const PlayerRow = ({
   getPlayerConfig,
   updatePlayerConfig 
 }) => {
+  // ARRAY INPUTCONFIGS MODIFICATO - RIMOSSO 'quo'
   const inputConfigs = [
     { field: 'prezzo', defaultValue: player.quotazione, color: theme.colors.accent.orange, width: '60px' },
     { field: 'budget', placeholder: '-', color: theme.colors.secondary[600], width: '60px' },
     { field: 'pmal', placeholder: '0', color: 'rgba(37, 99, 235, 0.8)', width: '60px' },
-    { field: 'quo', placeholder: '0', color: 'transparent', border: true, width: '60px' },
+    // RIMOSSO: { field: 'quo', defaultValue: player.quotazioneAttuale, color: 'transparent', border: true, width: '60px' },
     { field: 'titolare', placeholder: '0', color: 'rgba(37, 99, 235, 0.8)', width: '60px' },
     { field: 'affidabilita', placeholder: '0', color: 'rgba(37, 99, 235, 0.8)', width: '60px' },
     { field: 'fisico', placeholder: '0', color: 'rgba(37, 99, 235, 0.8)', width: '60px' },
@@ -34,7 +35,7 @@ const PlayerRow = ({
     '60px',  // Prezzo
     '60px',  // Budget  
     '60px',  // PMAL
-    '60px',  // Quo
+    '60px',  // Quo (ora read-only)
     '60px',  // Titolare
     '60px',  // Affidabilità
     '60px',  // Fisico
@@ -152,8 +153,8 @@ const PlayerRow = ({
           </div>
         </div>
 
-        {/* Editable Fields Prima del FMV */}
-        {inputConfigs.map((config, configIndex) => (
+        {/* Editable Fields Prima del Quo - Prezzo, Budget, PMAL */}
+        {inputConfigs.slice(0, 3).map((config, configIndex) => (
           <div key={config.field} style={{ 
             width: columnWidths[configIndex + 1],
             display: 'flex',
@@ -172,6 +173,47 @@ const PlayerRow = ({
                 ),
                 textAlign: 'center',
                 borderRadius: config.field === 'prezzo' ? theme.borderRadius.full : theme.borderRadius.base,
+                padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
+                width: '50px',
+                fontSize: theme.typography.fontSize.xs,
+                fontWeight: theme.typography.fontWeight.semibold,
+                border: config.border ? `1px solid ${theme.colors.dark.border.primary}` : '0'
+              }}
+            />
+          </div>
+        ))}
+
+        {/* Quo (Read-only) */}
+        <div style={{ 
+          color: theme.colors.dark.text.primary, 
+          textAlign: 'center', 
+          fontWeight: theme.typography.fontWeight.medium, 
+          fontSize: theme.typography.fontSize.sm,
+          width: columnWidths[4] // Quo è alla posizione 4
+        }}>
+          {player.quotazioneAttuale || 0}
+        </div>
+
+        {/* Editable Fields Dopo il Quo - Da Titolare a MV */}
+        {inputConfigs.slice(3).map((config, configIndex) => (
+          <div key={config.field} style={{ 
+            width: columnWidths[configIndex + 5], // Partono dalla posizione 5
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <Input
+              type="number"
+              step={config.step}
+              value={getPlayerConfig(player.id, config.field, config.defaultValue)}
+              onChange={(e) => updatePlayerConfig(player.id, config.field, e.target.value)}
+              placeholder={config.placeholder}
+              style={{
+                background: config.color,
+                color: config.border ? theme.colors.dark.text.primary : (
+                  config.color === 'transparent' ? theme.colors.dark.text.primary : 'white'
+                ),
+                textAlign: 'center',
+                borderRadius: theme.borderRadius.base,
                 padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
                 width: '50px',
                 fontSize: theme.typography.fontSize.xs,
@@ -212,7 +254,7 @@ const PlayerRow = ({
                   config.color === 'transparent' ? theme.colors.dark.text.primary : 'white'
                 ),
                 textAlign: 'center',
-                borderRadius: config.field === 'prezzo' ? theme.borderRadius.full : theme.borderRadius.base,
+                borderRadius: theme.borderRadius.base,
                 padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
                 width: '50px',
                 fontSize: theme.typography.fontSize.xs,
