@@ -4,6 +4,36 @@ import { theme } from '../theme/theme';
 import Button from './ui/Button';
 import Input from './ui/Input';
 
+// Mappa dei colori per ruolo
+const ROLE_COLORS = {
+  // Portiere -> oro
+  'Por': '#F59E0B',
+  
+  // Difensori -> verde chiaro
+  'Dc': '#10B981',
+  'B': '#10B981', 
+  'Ds': '#10B981',
+  'Dd': '#10B981',
+  
+  // Centrocampisti -> blu chiaro
+  'E': '#3B82F6',
+  'M': '#3B82F6',
+  'C': '#3B82F6',
+  
+  // Trequartisti/Esterni -> viola
+  'W': '#8B5CF6',
+  'T': '#8B5CF6',
+  
+  // Attaccanti -> rosso
+  'A': '#EF4444',
+  'Pc': '#EF4444'
+};
+
+// Funzione per ottenere il colore di un ruolo
+const getRoleColor = (roleKey) => {
+  return ROLE_COLORS[roleKey] || theme.colors.gray[500]; // Colore di default se non trovato
+};
+
 const ConfigurationHeader = ({ 
   searchTerm = '',
   onSearch = () => {},
@@ -81,7 +111,7 @@ const ConfigurationHeader = ({
           </div>
         </div>
 
-        {/* Role Filters - Single Row */}
+        {/* Role Filters - Single Row con colori per ruolo */}
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
@@ -90,36 +120,57 @@ const ConfigurationHeader = ({
           justifyContent: 'center',
           minWidth: 0, // Importante per permettere al flex di restringersi
           overflowX: 'auto', // Scroll orizzontale se necessario
-          whiteSpace: 'nowrap'
+          whiteSpace: 'nowrap',
+          minHeight: '50px'
         }}>
-          {roles.map(role => (
-            <Button
-              key={role.key}
-              variant={selectedRole === role.key ? 'primary' : 'outline'}
-              size="small"
-              onClick={() => onRoleChange(role.key)}
-              style={{
-                borderRadius: theme.borderRadius.full,
-                minWidth: '2.5rem',
-                width: '2.5rem',
-                height: '2.5rem',
-                padding: 0,
-                fontWeight: theme.typography.fontWeight.bold,
-                fontSize: theme.typography.fontSize.xs,
-                flexShrink: 0,
-                boxShadow: selectedRole === role.key ? 'none' : 'none', // Rimosso boxShadow che faceva crescere
-                border: selectedRole === role.key ? 
-                  `2px solid ${theme.colors.primary[500]}` : 
-                  `1px solid ${theme.colors.dark.border.primary}`,
-                ...(selectedRole === role.key && {
-                  background: theme.colors.primary[500],
-                  color: 'white'
-                })
-              }}
-            >
-              {role.label}
-            </Button>
-          ))}
+          {roles.map(role => {
+            const roleColor = getRoleColor(role.key);
+            const isSelected = selectedRole === role.key;
+            
+            return (
+              <button
+                key={role.key}
+                onClick={() => onRoleChange(role.key)}
+                style={{
+                  borderRadius: theme.borderRadius.full,
+                  minWidth: '2.5rem',
+                  width: '2.5rem',
+                  height: '2.5rem',
+                  padding: 0,
+                  fontWeight: theme.typography.fontWeight.bold,
+                  fontSize: theme.typography.fontSize.xs,
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                  transition: theme.transitions.fast,
+                  
+                  // Stili in base alla selezione
+                  background: isSelected ? roleColor : 'transparent',
+                  color: isSelected ? 'white' : roleColor,
+                  border: `2px solid ${roleColor}`,
+                  
+                  // Shadow per il ruolo selezionato
+                  boxShadow: isSelected ? `0 0 12px ${roleColor}40` : 'none',
+                  
+                  // Effetto hover
+                  transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) {
+                    e.target.style.background = `${roleColor}20`;
+                    e.target.style.transform = 'scale(1.02)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.transform = 'scale(1)';
+                  }
+                }}
+              >
+                {role.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Right Section */}
