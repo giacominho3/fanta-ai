@@ -324,15 +324,6 @@ const PlayerRow = ({
                 textOverflow: 'ellipsis'
               }}>
                 {player.squadra}
-                {isConfigured && (
-                  <div style={{ 
-                    width: theme.spacing[2], 
-                    height: theme.spacing[2], 
-                    background: theme.colors.primary[400], 
-                    borderRadius: '50%',
-                    flexShrink: 0
-                  }}></div>
-                )}
               </div>
               <div style={{ 
                 color: theme.colors.primary[500], 

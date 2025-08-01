@@ -1,6 +1,7 @@
 import React from 'react';
 import { theme } from '../theme/theme';
 import { Text } from './ui/Typography';
+import { getRoleColor } from './ConfigurationHeader';
 
 const ConfigurationStats = ({ 
   totalPlayers, 
@@ -44,7 +45,7 @@ const ConfigurationStats = ({
         <div style={{ 
           width: theme.spacing[3], 
           height: theme.spacing[3], 
-          background: theme.colors.accent.orange, 
+          background: getRoleColor(selectedRole), 
           borderRadius: '50%' 
         }}></div>
         <h2 style={{ 
@@ -53,7 +54,7 @@ const ConfigurationStats = ({
           fontWeight: theme.typography.fontWeight.semibold, 
           margin: 0 
         }}>
-          {getRoleDisplayName(selectedRole)} Top
+          {getRoleDisplayName(selectedRole)}
         </h2>
         <Text color="muted">({filteredPlayersCount})</Text>
       </div>
@@ -88,21 +89,6 @@ const ConfigurationStats = ({
             display: 'inline' 
           }}>
             {configuratedCount}
-          </Text>
-        </div>
-        
-        <div style={{ 
-          background: 'rgba(59, 130, 246, 0.2)', 
-          borderRadius: theme.borderRadius.lg, 
-          padding: theme.spacing[3] 
-        }}>
-          <Text style={{ color: theme.colors.accent.blue, display: 'inline' }}>Budget assegnato: </Text>
-          <Text style={{ 
-            color: theme.colors.accent.blue, 
-            fontWeight: theme.typography.fontWeight.semibold,
-            display: 'inline' 
-          }}>
-            {totalBudgetAssigned}FM
           </Text>
         </div>
       </div>

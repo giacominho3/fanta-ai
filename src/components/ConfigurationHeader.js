@@ -29,9 +29,8 @@ const ROLE_COLORS = {
   'Pc': '#EF4444'
 };
 
-// Funzione per ottenere il colore di un ruolo
-const getRoleColor = (roleKey) => {
-  return ROLE_COLORS[roleKey] || theme.colors.gray[500]; // Colore di default se non trovato
+export const getRoleColor = (roleKey) => {
+  return ROLE_COLORS[roleKey] || theme.colors.gray[500];
 };
 
 const ConfigurationHeader = ({ 
