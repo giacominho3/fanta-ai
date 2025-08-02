@@ -20,13 +20,14 @@ const ConfigurationPage = ({
   stats
 }) => {
   const tableHeaders = [
-    'Nome', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
+    'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
     'Fis', 'FMV Exp.', 'MV', 'FVM', 'Pres', 'Gol', 'Ass'
   ];
 
-  // Stesse larghezze del PlayerRow per perfetto allineamento
+  // Larghezze aggiornate con la nuova colonna Ruoli
   const columnWidths = [
-    '280px', // Nome (fissa)
+    '200px', // Nome (ridotta)
+    '100px', // Ruoli (nuova)
     '60px',  // Prezzo
     '60px',  // Budget  
     '60px',  // PMAL

@@ -1,6 +1,8 @@
 import React from 'react';
 import { theme } from '../theme/theme';
 import { AUCTION_TEAMS } from '../hooks/useAuctionData';
+import { ROLES } from '../constants/roles';
+import { getRoleColor } from '../components/ConfigurationHeader';
 import { Text } from './ui/Typography';
 import Card from './ui/Card';
 
@@ -8,8 +10,30 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
   // Slot per posizioni (25 + 3 portieri = 28 giocatori totali)
   const TEAM_SLOTS = 28;
 
+  // Ordine dei ruoli secondo i filtri
+  const ROLE_ORDER = ROLES.map(role => role.key);
+
+  // Funzione per ordinare i giocatori per ruolo
+  const sortPlayersByRole = (players) => {
+    return players.sort((a, b) => {
+      // Prendi il primo ruolo di ogni giocatore per l'ordinamento
+      const roleA = a.playerRoles?.[0] || a.playerRole || 'Z';
+      const roleB = b.playerRoles?.[0] || b.playerRole || 'Z';
+      
+      const indexA = ROLE_ORDER.indexOf(roleA);
+      const indexB = ROLE_ORDER.indexOf(roleB);
+      
+      // Se il ruolo non è trovato, mettilo alla fine
+      const finalIndexA = indexA === -1 ? 999 : indexA;
+      const finalIndexB = indexB === -1 ? 999 : indexB;
+      
+      return finalIndexA - finalIndexB;
+    });
+  };
+
   const TeamCard = ({ team }) => {
     const teamPlayersData = getTeamPlayers(team.id);
+    const sortedPlayers = sortPlayersByRole(teamPlayersData);
     const teamStats = auctionStats.teamStats?.find(t => t.id === team.id) || {
       playersCount: 0,
       totalSpent: 0,
@@ -119,53 +143,78 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
           maxHeight: '400px',
           overflowY: 'auto'
         }}>
-          {/* Render dei giocatori acquistati */}
-          {teamPlayersData.map((playerData, index) => (
-            <div
-              key={index}
-              style={{
-                background: theme.colors.dark.surface.secondary,
-                borderRadius: theme.borderRadius.base,
-                padding: theme.spacing[2],
-                border: `1px solid ${team.color}40`
-              }}
-            >
-              <div style={{
-                color: theme.colors.dark.text.primary,
-                fontSize: theme.typography.fontSize.xs,
-                fontWeight: theme.typography.fontWeight.semibold,
-                marginBottom: theme.spacing[1],
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}>
-                {playerData.playerName || `Player ${playerData.playerId}`}
-              </div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <span style={{
-                  color: team.color,
+          {/* Render dei giocatori acquistati - ORDINATI PER RUOLO */}
+          {sortedPlayers.map((playerData, index) => {
+            // Array di tutti i ruoli del giocatore
+            const allRoles = playerData.playerRoles || [playerData.playerRole] || ['N/A'];
+            
+            return (
+              <div
+                key={index}
+                style={{
+                  background: theme.colors.dark.surface.secondary,
+                  borderRadius: theme.borderRadius.base,
+                  padding: theme.spacing[2],
+                  border: `1px solid ${team.color}40`
+                }}
+              >
+                <div style={{
+                  color: theme.colors.dark.text.primary,
                   fontSize: theme.typography.fontSize.xs,
-                  fontWeight: theme.typography.fontWeight.medium
+                  fontWeight: theme.typography.fontWeight.semibold,
+                  marginBottom: theme.spacing[1],
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}>
-                  {playerData.playerRole || 'N/A'}
-                </span>
-                <span style={{
-                  color: theme.colors.accent.orange,
-                  fontSize: theme.typography.fontSize.xs,
-                  fontWeight: theme.typography.fontWeight.bold
+                  {playerData.playerName || `Player ${playerData.playerId}`}
+                </div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
                 }}>
-                  €{playerData.price || 0}
-                </span>
+                  {/* Rendering di tutti i ruoli con i loro colori */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: theme.spacing[1]
+                  }}>
+                    {allRoles.map((role, roleIndex) => (
+                      <span
+                        key={roleIndex}
+                        style={{
+                          color: getRoleColor(role),
+                          fontSize: theme.typography.fontSize.xs,
+                          fontWeight: theme.typography.fontWeight.bold
+                        }}
+                      >
+                        {role}
+                        {roleIndex < allRoles.length - 1 && (
+                          <span style={{ 
+                            color: theme.colors.dark.text.tertiary,
+                            fontWeight: theme.typography.fontWeight.normal 
+                          }}>
+                            ,
+                          </span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <span style={{
+                    color: theme.colors.accent.orange,
+                    fontSize: theme.typography.fontSize.xs,
+                    fontWeight: theme.typography.fontWeight.bold
+                  }}>
+                    €{playerData.price || 0}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           
           {/* Slot vuoti */}
-          {Array.from({ length: TEAM_SLOTS - teamPlayersData.length }).map((_, index) => (
+          {Array.from({ length: TEAM_SLOTS - sortedPlayers.length }).map((_, index) => (
             <div
               key={`empty-${index}`}
               style={{

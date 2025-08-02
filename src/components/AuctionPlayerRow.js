@@ -2,6 +2,7 @@ import React from 'react';
 import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
+import RoleBadges from './ui/RoleBadge';
 import { AUCTION_TEAMS } from '../hooks/useAuctionData';
 
 // TeamBadge component (copied from PlayerRow.js)
@@ -99,8 +100,8 @@ const AuctionPlayerRow = ({
   ];
 
   const columnWidths = [
-    '280px', '60px', '60px', '60px', '60px', '60px', '60px', 
-    '60px', '60px', '60px', '60px', '60px', '60px', '60px', '120px', '80px'
+    '200px', '100px', '60px', '60px', '60px', '60px', '60px', 
+    '60px', '60px', '60px', '60px', '60px', '60px', '60px', '60px', '120px', '80px'
   ];
 
   return (
@@ -118,13 +119,13 @@ const AuctionPlayerRow = ({
         width: '100%'
       }}>
         
-        {/* Player Info */}
+        {/* Player Info - Nome senza ruoli */}
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           gap: theme.spacing[2],
-          width: '280px',
-          minWidth: '280px',
+          width: '200px',
+          minWidth: '200px',
           overflow: 'hidden'
         }}>
           <div style={{
@@ -161,15 +162,13 @@ const AuctionPlayerRow = ({
               <div style={{
                 color: theme.colors.dark.text.tertiary,
                 fontSize: theme.typography.fontSize.xs,
-                display: 'flex',
-                alignItems: 'center',
-                gap: theme.spacing[2],
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis'
               }}>
                 {player.squadra}
               </div>
+              
               <div style={{ 
                 color: isAuctioned ? theme.colors.dark.text.tertiary : theme.colors.primary[500], 
                 fontWeight: theme.typography.fontWeight.semibold, 
@@ -184,10 +183,20 @@ const AuctionPlayerRow = ({
           </div>
         </div>
 
+        {/* Colonna Ruoli */}
+        <div style={{ 
+          width: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <RoleBadges roles={player.rmArray} />
+        </div>
+
         {/* Read-only Fields - Prima del Quo */}
         {displayFields.slice(0, 3).map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 1],
+            width: columnWidths[configIndex + 2], // +2 perché ora abbiamo Nome + Ruoli
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -212,7 +221,7 @@ const AuctionPlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[4]
+          width: columnWidths[5] // Quo è ora alla posizione 5
         }}>
           {player.quotazioneAttuale || 0}
         </div>
@@ -220,7 +229,7 @@ const AuctionPlayerRow = ({
         {/* Read-only Fields - Da Titolare a MV */}
         {displayFields.slice(3).map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 5],
+            width: columnWidths[configIndex + 6], // Partono dalla posizione 6
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -245,7 +254,7 @@ const AuctionPlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[10]
+          width: columnWidths[11] // FMV è ora alla posizione 11
         }}>
           {player.fvm}
         </div>
@@ -253,7 +262,7 @@ const AuctionPlayerRow = ({
         {/* Read-only Fields - Dopo il FMV */}
         {postFmvFields.map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 11],
+            width: columnWidths[configIndex + 12], // Partono dalla posizione 12
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -273,7 +282,7 @@ const AuctionPlayerRow = ({
         ))}
 
         {/* Team Dropdown */}
-        <div style={{ width: columnWidths[14], display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: columnWidths[15], display: 'flex', justifyContent: 'center' }}>
           <select
             value={getPlayerAuction(player.id, 'team')}
             onChange={(e) => updatePlayerAuction(player.id, 'team', e.target.value)}
@@ -297,7 +306,7 @@ const AuctionPlayerRow = ({
         </div>
 
         {/* Auction Price */}
-        <div style={{ width: columnWidths[15], display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: columnWidths[16], display: 'flex', justifyContent: 'center' }}>
           <Input
             type="number"
             value={getPlayerAuction(player.id, 'price')}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
+import RoleBadges from './ui/RoleBadge';
 
 // Mappa dei colori sociali delle squadre di Serie A 2025/26
 const TEAM_COLORS = {
@@ -240,7 +241,8 @@ const PlayerRow = ({
 
   // Definizione delle larghezze fisse per ogni colonna
   const columnWidths = [
-    '280px', // Nome (fissa)
+    '200px', // Nome (ridotta per fare spazio ai ruoli)
+    '100px', // Ruoli (nuova colonna)
     '60px',  // Prezzo
     '60px',  // Budget  
     '60px',  // PMAL
@@ -271,13 +273,13 @@ const PlayerRow = ({
         width: '100%'
       }}>
         
-        {/* Player Info - Larghezza Fissa */}
+        {/* Player Info - Nome senza ruoli */}
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           gap: theme.spacing[2],
-          width: '280px', // Larghezza fissa
-          minWidth: '280px',
+          width: '200px',
+          minWidth: '200px',
           overflow: 'hidden'
         }}>
           {/* Index */}
@@ -306,25 +308,23 @@ const PlayerRow = ({
             display: 'flex', 
             alignItems: 'center', 
             gap: theme.spacing[2],
-            minWidth: 0, // Permette il truncate
+            minWidth: 0,
             flex: 1
           }}>
-            {/* TeamBadge con colori della squadra invece dell'avatar con iniziale */}
+            {/* TeamBadge con colori della squadra */}
             <TeamBadge teamName={player.squadra} size={theme.spacing[8]} />
             
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{
                 color: theme.colors.dark.text.tertiary,
                 fontSize: theme.typography.fontSize.xs,
-                display: 'flex',
-                alignItems: 'center',
-                gap: theme.spacing[2],
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis'
               }}>
                 {player.squadra}
               </div>
+              
               <div style={{ 
                 color: theme.colors.primary[500], 
                 fontWeight: theme.typography.fontWeight.semibold, 
@@ -339,10 +339,20 @@ const PlayerRow = ({
           </div>
         </div>
 
+        {/* Colonna Ruoli */}
+        <div style={{ 
+          width: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <RoleBadges roles={player.rmArray} />
+        </div>
+
         {/* Editable Fields Prima del Quo - Prezzo, Budget, PMAL */}
         {inputConfigs.slice(0, 3).map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 1],
+            width: columnWidths[configIndex + 2], // +2 perché ora abbiamo Nome + Ruoli
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -375,7 +385,7 @@ const PlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[4] // Quo è alla posizione 4
+          width: columnWidths[5] // Quo è ora alla posizione 5
         }}>
           {player.quotazioneAttuale || 0}
         </div>
@@ -383,7 +393,7 @@ const PlayerRow = ({
         {/* Editable Fields Dopo il Quo - Da Titolare a MV */}
         {inputConfigs.slice(3).map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 5], // Partono dalla posizione 5
+            width: columnWidths[configIndex + 6], // Partono dalla posizione 6
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -416,7 +426,7 @@ const PlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[10] // FMV è alla posizione 10
+          width: columnWidths[11] // FMV è ora alla posizione 11
         }}>
           {player.fvm}
         </div>
@@ -424,7 +434,7 @@ const PlayerRow = ({
         {/* Editable Fields Dopo il FMV */}
         {postFmvInputConfigs.map((config, configIndex) => (
           <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 11], // Partono dalla posizione 11
+            width: columnWidths[configIndex + 12], // Partono dalla posizione 12
             display: 'flex',
             justifyContent: 'center'
           }}>

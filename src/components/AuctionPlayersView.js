@@ -30,13 +30,14 @@ const AuctionPlayersView = ({
   };
 
   const tableHeaders = [
-    'Nome', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
+    'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
     'Fis', 'FMV Exp.', 'MV', 'FVM', 'Pres', 'Gol', 'Ass', 'Squadra', 'Prezzo Asta'
   ];
 
-  // Larghezze delle colonne (incluse le nuove per asta)
+  // Larghezze delle colonne aggiornate (incluse le nuove per asta)
   const columnWidths = [
-    '280px', // Nome
+    '200px', // Nome (ridotta)
+    '100px', // Ruoli (nuova)
     '60px',  // Prezzo
     '60px',  // Budget  
     '60px',  // PMAL
