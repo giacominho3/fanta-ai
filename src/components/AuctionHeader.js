@@ -145,7 +145,7 @@ const AuctionHeader = ({
               color: theme.colors.accent.blue,
               fontWeight: theme.typography.fontWeight.semibold
             }}>
-              €{stats.totalSpent || 0}
+              FM {stats.totalSpent || 0}
             </div>
           </div>
 

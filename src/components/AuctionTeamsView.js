@@ -103,7 +103,7 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
               fontSize: theme.typography.fontSize.lg,
               fontWeight: theme.typography.fontWeight.bold
             }}>
-              €{teamStats.totalSpent}
+              FM {teamStats.totalSpent}
             </div>
             <div style={{
               color: theme.colors.dark.text.tertiary,
@@ -124,7 +124,7 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
               fontSize: theme.typography.fontSize.lg,
               fontWeight: theme.typography.fontWeight.bold
             }}>
-              €{teamStats.remainingBudget}
+              FM {teamStats.remainingBudget}
             </div>
             <div style={{
               color: theme.colors.dark.text.tertiary,
@@ -206,7 +206,7 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
                     fontSize: theme.typography.fontSize.xs,
                     fontWeight: theme.typography.fontWeight.bold
                   }}>
-                    €{playerData.price || 0}
+                    FM {playerData.price || 0}
                   </span>
                 </div>
               </div>
@@ -269,7 +269,7 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
               fontWeight: theme.typography.fontWeight.bold,
               marginBottom: theme.spacing[1]
             }}>
-              €{auctionStats.totalSpent || 0}
+              FM {auctionStats.totalSpent || 0}
             </div>
             <Text color="muted" size="sm">Totale Speso</Text>
           </div>
@@ -283,7 +283,7 @@ const AuctionTeamsView = ({ getTeamPlayers, auctionStats }) => {
               fontWeight: theme.typography.fontWeight.bold,
               marginBottom: theme.spacing[1]
             }}>
-              €{auctionStats.averagePrice || 0}
+              FM {auctionStats.averagePrice || 0}
             </div>
             <Text color="muted" size="sm">Prezzo Medio</Text>
           </div>

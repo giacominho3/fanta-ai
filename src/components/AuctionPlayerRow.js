@@ -311,7 +311,7 @@ const AuctionPlayerRow = ({
             type="number"
             value={getPlayerAuction(player.id, 'price')}
             onChange={(e) => updatePlayerAuction(player.id, 'price', e.target.value)}
-            placeholder="€"
+            placeholder="FM"
             style={{
               background: theme.colors.accent.orange,
               color: 'white',
