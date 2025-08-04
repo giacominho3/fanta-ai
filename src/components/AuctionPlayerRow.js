@@ -81,27 +81,39 @@ const AuctionPlayerRow = ({
   getPlayerAuction,
   updatePlayerAuction
 }) => {
-  // Configurazione dei campi (tutti read-only tranne team e price)
+  // Calcola il prezzo basato sul budget (budget% * 500)
+  const calculatePrice = (budget) => {
+    const budgetValue = parseFloat(budget) || 0;
+    return Math.round(budgetValue * 5); // budget% * 500 / 100 = budget * 5
+  };
+
+  const currentBudget = getPlayerConfig(player.id, 'budget', '0');
+  const calculatedPrice = calculatePrice(currentBudget);
+
+  // Configurazione dei campi (tutti read-only tranne team e price) - RIMOSSI fmvExp, mv, presenze, gol, assist
   const displayFields = [
-    { field: 'prezzo', value: getPlayerConfig(player.id, 'prezzo', player.quotazione), color: theme.colors.accent.orange },
+    { field: 'prezzo', value: calculatedPrice, color: theme.colors.accent.orange },
     { field: 'budget', value: getPlayerConfig(player.id, 'budget', '-'), color: theme.colors.secondary[600] },
     { field: 'pmal', value: getPlayerConfig(player.id, 'pmal', '0'), color: 'rgba(37, 99, 235, 0.8)' },
     { field: 'titolare', value: getPlayerConfig(player.id, 'titolare', '0'), color: 'rgba(37, 99, 235, 0.8)' },
     { field: 'affidabilita', value: getPlayerConfig(player.id, 'affidabilita', '0'), color: 'rgba(37, 99, 235, 0.8)' },
-    { field: 'fisico', value: getPlayerConfig(player.id, 'fisico', '0'), color: 'rgba(37, 99, 235, 0.8)' },
-    { field: 'fmvExp', value: getPlayerConfig(player.id, 'fmvExp', '0'), color: 'rgba(37, 99, 235, 0.8)' },
-    { field: 'mv', value: getPlayerConfig(player.id, 'mv', '0'), color: 'rgba(37, 99, 235, 0.8)' }
+    { field: 'fisico', value: getPlayerConfig(player.id, 'fisico', '0'), color: 'rgba(37, 99, 235, 0.8)' }
   ];
 
-  const postFmvFields = [
-    { field: 'presenze', value: getPlayerConfig(player.id, 'presenze', '0'), color: 'rgba(37, 99, 235, 0.8)' },
-    { field: 'gol', value: getPlayerConfig(player.id, 'gol', '0'), color: 'rgba(220, 38, 38, 0.8)' },
-    { field: 'assist', value: getPlayerConfig(player.id, 'assist', '0'), color: 'rgba(202, 138, 4, 0.8)' }
-  ];
-
+  // Larghezze delle colonne aggiornate (rimosse 5 colonne, allargate le rimanenti)
   const columnWidths = [
-    '200px', '100px', '60px', '60px', '60px', '60px', '60px', 
-    '60px', '60px', '60px', '60px', '60px', '60px', '60px', '60px', '120px', '80px'
+    '250px', // Nome (ridotta per modalità asta)
+    '130px', // Ruoli (allargata)
+    '90px',  // Prezzo (allargata)
+    '90px',  // Budget (allargata)
+    '70px',  // PMAL (allargata)
+    '70px',  // Quo (allargata)
+    '70px',  // Titolare (allargata)
+    '70px',  // Affidabilità (allargata)
+    '70px',  // Fisico (allargata)
+    '70px',  // FMV (allargata)
+    '150px', // Squadra (allargata)
+    '100px'  // Prezzo Asta (allargata)
   ];
 
   return (
@@ -124,8 +136,8 @@ const AuctionPlayerRow = ({
           display: 'flex', 
           alignItems: 'center', 
           gap: theme.spacing[2],
-          width: '200px',
-          minWidth: '200px',
+          width: '250px',
+          minWidth: '250px',
           overflow: 'hidden'
         }}>
           <div style={{
@@ -185,7 +197,7 @@ const AuctionPlayerRow = ({
 
         {/* Colonna Ruoli */}
         <div style={{ 
-          width: '100px',
+          width: '130px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
@@ -206,11 +218,12 @@ const AuctionPlayerRow = ({
               textAlign: 'center',
               borderRadius: config.field === 'prezzo' ? theme.borderRadius.full : theme.borderRadius.base,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-              width: '50px',
+              width: config.field === 'budget' ? '80px' : '60px',
               fontSize: theme.typography.fontSize.xs,
-              fontWeight: theme.typography.fontWeight.semibold
+              fontWeight: theme.typography.fontWeight.semibold,
+              position: 'relative'
             }}>
-              {config.value}
+              {config.field === 'budget' && config.value !== '-' ? `${config.value}%` : config.value}
             </div>
           </div>
         ))}
@@ -221,12 +234,12 @@ const AuctionPlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[5] // Quo è ora alla posizione 5
+          width: columnWidths[5]
         }}>
           {player.quotazioneAttuale || 0}
         </div>
 
-        {/* Read-only Fields - Da Titolare a MV */}
+        {/* Read-only Fields - Da Titolare a Fisico */}
         {displayFields.slice(3).map((config, configIndex) => (
           <div key={config.field} style={{ 
             width: columnWidths[configIndex + 6], // Partono dalla posizione 6
@@ -239,7 +252,7 @@ const AuctionPlayerRow = ({
               textAlign: 'center',
               borderRadius: theme.borderRadius.base,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-              width: '50px',
+              width: '60px',
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold
             }}>
@@ -254,35 +267,13 @@ const AuctionPlayerRow = ({
           textAlign: 'center', 
           fontWeight: theme.typography.fontWeight.medium, 
           fontSize: theme.typography.fontSize.sm,
-          width: columnWidths[11] // FMV è ora alla posizione 11
+          width: columnWidths[9]
         }}>
           {player.fvm}
         </div>
 
-        {/* Read-only Fields - Dopo il FMV */}
-        {postFmvFields.map((config, configIndex) => (
-          <div key={config.field} style={{ 
-            width: columnWidths[configIndex + 12], // Partono dalla posizione 12
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              background: config.color,
-              color: 'white',
-              textAlign: 'center',
-              borderRadius: theme.borderRadius.base,
-              padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-              width: '50px',
-              fontSize: theme.typography.fontSize.xs,
-              fontWeight: theme.typography.fontWeight.semibold
-            }}>
-              {config.value}
-            </div>
-          </div>
-        ))}
-
         {/* Team Dropdown */}
-        <div style={{ width: columnWidths[15], display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: columnWidths[10], display: 'flex', justifyContent: 'center' }}>
           <select
             value={getPlayerAuction(player.id, 'team')}
             onChange={(e) => updatePlayerAuction(player.id, 'team', e.target.value)}
@@ -293,7 +284,7 @@ const AuctionPlayerRow = ({
               borderRadius: theme.borderRadius.base,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
               fontSize: theme.typography.fontSize.xs,
-              width: '110px'
+              width: '140px'
             }}
           >
             <option value="">Squadra</option>
@@ -306,7 +297,7 @@ const AuctionPlayerRow = ({
         </div>
 
         {/* Auction Price */}
-        <div style={{ width: columnWidths[16], display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: columnWidths[11], display: 'flex', justifyContent: 'center' }}>
           <Input
             type="number"
             value={getPlayerAuction(player.id, 'price')}
@@ -318,7 +309,7 @@ const AuctionPlayerRow = ({
               textAlign: 'center',
               borderRadius: theme.borderRadius.base,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-              width: '60px',
+              width: '80px',
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold,
               border: '0'

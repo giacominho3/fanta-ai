@@ -29,30 +29,26 @@ const AuctionPlayersView = ({
     return roleMap[role] || role;
   };
 
+  // Header delle tabelle aggiornati - RIMOSSI: FMV Exp., MV, Pres, Gol, Ass
   const tableHeaders = [
     'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
-    'Fis', 'FMV Exp.', 'MV', 'FVM', 'Pres', 'Gol', 'Ass', 'Squadra', 'Prezzo Asta'
+    'Fis', 'FVM', 'Squadra', 'Prezzo Asta'
   ];
 
-  // Larghezze delle colonne aggiornate (incluse le nuove per asta)
+  // Larghezze delle colonne aggiornate (rimosse 5 colonne, allargate le rimanenti)
   const columnWidths = [
-    '200px', // Nome (ridotta)
-    '100px', // Ruoli (nuova)
-    '60px',  // Prezzo
-    '60px',  // Budget  
-    '60px',  // PMAL
-    '60px',  // Quo
-    '60px',  // Titolare
-    '60px',  // Affidabilità
-    '60px',  // Fisico
-    '60px',  // FMV Exp
-    '60px',  // MV
-    '60px',  // FMV
-    '60px',  // Presenze
-    '60px',  // Gol
-    '60px',  // Assist
-    '120px', // Squadra (dropdown)
-    '80px'   // Prezzo Asta
+    '250px', // Nome (ridotta per modalità asta)
+    '130px', // Ruoli (allargata)
+    '90px',  // Prezzo (allargata)
+    '90px',  // Budget (allargata)
+    '70px',  // PMAL (allargata)
+    '70px',  // Quo (allargata)
+    '70px',  // Titolare (allargata)
+    '70px',  // Affidabilità (allargata)
+    '70px',  // Fisico (allargata)
+    '70px',  // FMV (allargata)
+    '150px', // Squadra (allargata)
+    '100px'  // Prezzo Asta (allargata)
   ];
 
   return (
