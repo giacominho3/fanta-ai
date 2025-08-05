@@ -29,7 +29,7 @@ const AuctionPlayersView = ({
     return roleMap[role] || role;
   };
 
-  // Header delle tabelle aggiornati - RIMOSSI: FMV Exp., MV, Pres, Gol, Ass
+  // Header delle tabelle aggiornati con simboli stella per i campi di valutazione
   const tableHeaders = [
     'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
     'Fis', 'FVM', 'Squadra', 'Prezzo Asta'
@@ -43,9 +43,9 @@ const AuctionPlayersView = ({
     '90px',  // Budget (allargata)
     '70px',  // PMAL (allargata)
     '70px',  // Quo (allargata)
-    '70px',  // Titolare (allargata)
-    '70px',  // Affidabilità (allargata)
-    '70px',  // Fisico (allargata)
+    '90px',  // Titolare (allargata) - ora stelline
+    '90px',  // Affidabilità (allargata) - ora stelline
+    '90px',  // Fisico (allargata) - ora stelline
     '70px',  // FMV (allargata)
     '150px', // Squadra (allargata)
     '100px'  // Prezzo Asta (allargata)

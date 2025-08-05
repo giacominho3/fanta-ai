@@ -3,6 +3,7 @@ import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
 import RoleBadges from './ui/RoleBadge';
+import StarRating from './ui/StarRating';
 
 // Mappa dei colori sociali delle squadre di Serie A 2025/26
 const TEAM_COLORS = {
@@ -221,6 +222,7 @@ const PlayerRow = ({
   updatePlayerConfig 
 }) => {
   // ARRAY INPUTCONFIGS MODIFICATO - Rimosso fmvExp, mv, presenze, gol, assist
+  // Ora solo budget e pmal sono input, il resto sono stelline
   const inputConfigs = [
     { field: 'budget', placeholder: '0', color: theme.colors.secondary[600], width: '90px' },
     { field: 'pmal', placeholder: '0', color: 'rgba(37, 99, 235, 0.8)', width: '70px' },
@@ -237,9 +239,9 @@ const PlayerRow = ({
     '90px',  // Budget (allargata)
     '70px',  // PMAL (allargata)
     '70px',  // Quo (allargata, read-only)
-    '70px',  // Titolare (allargata)
-    '70px',  // Affidabilità (allargata)
-    '70px',  // Fisico (allargata)
+    '90px',  // Titolare (allargata) - ora stelline
+    '90px',  // Affidabilità (allargata) - ora stelline
+    '90px',  // Fisico (allargata) - ora stelline
     '70px'   // FMV (allargata, read-only)
   ];
 
@@ -439,29 +441,19 @@ const PlayerRow = ({
           {player.quotazioneAttuale || 0}
         </div>
 
-        {/* Editable Fields - Titolare, Affidabilità, Fisico */}
+        {/* Star Rating Fields - Titolare, Affidabilità, Fisico */}
         {inputConfigs.slice(2).map((config, configIndex) => (
           <div key={config.field} style={{ 
             width: columnWidths[configIndex + 6], // Partono dalla posizione 6
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
-            <Input
-              type="number"
-              value={getPlayerConfig(player.id, config.field, '')}
-              onChange={(e) => updatePlayerConfig(player.id, config.field, e.target.value)}
-              placeholder={config.placeholder}
-              style={{
-                background: config.color,
-                color: 'white',
-                textAlign: 'center',
-                borderRadius: theme.borderRadius.base,
-                padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-                width: '60px',
-                fontSize: theme.typography.fontSize.xs,
-                fontWeight: theme.typography.fontWeight.semibold,
-                border: '0'
-              }}
+            <StarRating
+              value={getPlayerConfig(player.id, config.field, '0')}
+              onChange={(value) => updatePlayerConfig(player.id, config.field, value.toString())}
+              size={14}
+              color={config.color}
             />
           </div>
         ))}

@@ -3,6 +3,7 @@ import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
 import RoleBadges from './ui/RoleBadge';
+import StarRating from './ui/StarRating';
 import { AUCTION_TEAMS } from '../hooks/useAuctionData';
 
 // TeamBadge component (copied from PlayerRow.js)
@@ -90,7 +91,7 @@ const AuctionPlayerRow = ({
   const currentBudget = getPlayerConfig(player.id, 'budget', '0');
   const calculatedPrice = calculatePrice(currentBudget);
 
-  // Configurazione dei campi (tutti read-only tranne team e price) - RIMOSSI fmvExp, mv, presenze, gol, assist
+  // Configurazione dei campi (tutti read-only tranne team e price)
   const displayFields = [
     { field: 'prezzo', value: calculatedPrice, color: theme.colors.accent.orange },
     { field: 'budget', value: getPlayerConfig(player.id, 'budget', '-'), color: theme.colors.secondary[600] },
@@ -108,9 +109,9 @@ const AuctionPlayerRow = ({
     '90px',  // Budget (allargata)
     '70px',  // PMAL (allargata)
     '70px',  // Quo (allargata)
-    '70px',  // Titolare (allargata)
-    '70px',  // Affidabilità (allargata)
-    '70px',  // Fisico (allargata)
+    '90px',  // Titolare (allargata) - ora stelline
+    '90px',  // Affidabilità (allargata) - ora stelline
+    '90px',  // Fisico (allargata) - ora stelline
     '70px',  // FMV (allargata)
     '150px', // Squadra (allargata)
     '100px'  // Prezzo Asta (allargata)
@@ -239,25 +240,20 @@ const AuctionPlayerRow = ({
           {player.quotazioneAttuale || 0}
         </div>
 
-        {/* Read-only Fields - Da Titolare a Fisico */}
+        {/* Star Rating Fields - Titolare, Affidabilità, Fisico (Read-only) */}
         {displayFields.slice(3).map((config, configIndex) => (
           <div key={config.field} style={{ 
             width: columnWidths[configIndex + 6], // Partono dalla posizione 6
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
-            <div style={{
-              background: config.color,
-              color: 'white',
-              textAlign: 'center',
-              borderRadius: theme.borderRadius.base,
-              padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-              width: '60px',
-              fontSize: theme.typography.fontSize.xs,
-              fontWeight: theme.typography.fontWeight.semibold
-            }}>
-              {config.value}
-            </div>
+            <StarRating
+              value={getPlayerConfig(player.id, config.field, '0')}
+              size={12}
+              color={config.color}
+              readOnly={true}
+            />
           </div>
         ))}
 
