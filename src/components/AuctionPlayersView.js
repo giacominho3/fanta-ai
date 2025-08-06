@@ -3,6 +3,8 @@ import { theme } from '../theme/theme';
 import { Text } from './ui/Typography';
 import { getRoleColor } from './ConfigurationHeader';
 import AuctionPlayerRow from './AuctionPlayerRow';
+import SortableHeader from './SortableHeader';
+import { useSorting } from '../hooks/useSorting';
 
 const AuctionPlayersView = ({
   filteredPlayers,
@@ -11,6 +13,9 @@ const AuctionPlayersView = ({
   updatePlayerAuction,
   selectedRole
 }) => {
+  // Hook per l'ordinamento
+  const { sortedData, sortField, sortDirection, handleSort } = useSorting(filteredPlayers, getPlayerConfig);
+
   const getRoleDisplayName = (role) => {
     const roleMap = {
       'T': 'Trequartisti',
@@ -29,10 +34,20 @@ const AuctionPlayersView = ({
     return roleMap[role] || role;
   };
 
-  // Header delle tabelle aggiornati con simboli stella per i campi di valutazione
+  // Header delle tabelle con configurazioni di ordinamento
   const tableHeaders = [
-    'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff',
-    'Fis', 'FVM', 'Squadra', 'Prezzo Asta'
+    { label: 'Nome', field: null, sortable: false },
+    { label: 'Ruoli', field: null, sortable: false },
+    { label: 'Prezzo', field: 'prezzo', sortable: true },
+    { label: 'Budget', field: 'budget', sortable: true },
+    { label: 'App', field: 'app', sortable: true },
+    { label: 'Quo', field: null, sortable: false },
+    { label: 'Tit', field: null, sortable: false },
+    { label: 'Aff', field: null, sortable: false },
+    { label: 'Fis', field: null, sortable: false },
+    { label: 'FVM', field: 'fvm', sortable: true },
+    { label: 'Squadra', field: null, sortable: false },
+    { label: 'Prezzo Asta', field: null, sortable: false }
   ];
 
   // Larghezze delle colonne aggiornate (rimosse 5 colonne, allargate le rimanenti)
@@ -80,7 +95,7 @@ const AuctionPlayersView = ({
           }}>
             {getRoleDisplayName(selectedRole)}
           </h2>
-          <Text color="muted">({filteredPlayers.length})</Text>
+          <Text color="muted">({sortedData.length})</Text>
         </div>
         
         <div style={{ 
@@ -96,7 +111,7 @@ const AuctionPlayersView = ({
           }}>
             <Text color="muted" style={{ display: 'inline' }}>Disponibili: </Text>
             <Text style={{ fontWeight: theme.typography.fontWeight.semibold, display: 'inline' }}>
-              {filteredPlayers.filter(p => !getPlayerAuction(p.id, 'team')).length}
+              {sortedData.filter(p => !getPlayerAuction(p.id, 'team')).length}
             </Text>
           </div>
           
@@ -111,7 +126,7 @@ const AuctionPlayersView = ({
               fontWeight: theme.typography.fontWeight.semibold,
               display: 'inline' 
             }}>
-              {filteredPlayers.filter(p => getPlayerAuction(p.id, 'team')).length}
+              {sortedData.filter(p => getPlayerAuction(p.id, 'team')).length}
             </Text>
           </div>
         </div>
@@ -140,14 +155,25 @@ const AuctionPlayersView = ({
         }}>
           {tableHeaders.map((header, index) => (
             <div 
-              key={header} 
+              key={typeof header === 'string' ? header : header.label} 
               style={{ 
                 textAlign: index === 0 ? 'left' : 'center',
                 width: columnWidths[index],
                 paddingLeft: index === 0 ? theme.spacing[2] : 0
               }}
             >
-              {header}
+              <SortableHeader
+                field={typeof header === 'object' ? header.field : null}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+                sortable={typeof header === 'object' ? header.sortable : false}
+                style={{
+                  justifyContent: index === 0 ? 'flex-start' : 'center'
+                }}
+              >
+                {typeof header === 'string' ? header : header.label}
+              </SortableHeader>
             </div>
           ))}
         </div>
@@ -157,7 +183,7 @@ const AuctionPlayersView = ({
           maxHeight: 'calc(100vh - 250px)',
           overflowY: 'auto'
         }}>
-          {filteredPlayers.map((player, index) => {
+          {sortedData.map((player, index) => {
             const isAuctioned = getPlayerAuction(player.id, 'team');
             
             return (
@@ -175,7 +201,7 @@ const AuctionPlayersView = ({
         </div>
 
         {/* Empty State */}
-        {filteredPlayers.length === 0 && (
+        {sortedData.length === 0 && (
           <div style={{
             textAlign: 'center',
             padding: theme.spacing[12],

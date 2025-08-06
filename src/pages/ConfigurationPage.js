@@ -3,6 +3,8 @@ import { theme, gradients } from '../theme/theme';
 import ConfigurationHeader from '../components/ConfigurationHeader';
 import ConfigurationStats from '../components/ConfigurationStats';
 import PlayerRow from '../components/PlayerRow';
+import SortableHeader from '../components/SortableHeader';
+import { useSorting } from '../hooks/useSorting';
 
 const ConfigurationPage = ({
   filteredPlayers,
@@ -19,9 +21,21 @@ const ConfigurationPage = ({
   roles,
   stats
 }) => {
-  // Header delle tabelle aggiornati con simboli stella per i campi di valutazione
+  // Hook per l'ordinamento
+  const { sortedData, sortField, sortDirection, handleSort } = useSorting(filteredPlayers, getPlayerConfig);
+
+  // Header delle tabelle con configurazioni di ordinamento
   const tableHeaders = [
-    'Nome', 'Ruoli', 'Prezzo', 'Budget', 'App', 'Quo', 'Tit', 'Aff', 'Fis', 'FVM'
+    { label: 'Nome', field: null, sortable: false },
+    { label: 'Ruoli', field: null, sortable: false },
+    { label: 'Prezzo', field: 'prezzo', sortable: true },
+    { label: 'Budget', field: 'budget', sortable: true },
+    { label: 'App', field: 'app', sortable: true },
+    { label: 'Quo', field: null, sortable: false },
+    { label: 'Tit', field: null, sortable: false },
+    { label: 'Aff', field: null, sortable: false },
+    { label: 'Fis', field: null, sortable: false },
+    { label: 'FVM', field: 'fvm', sortable: true }
   ];
 
   // Larghezze aggiornate - rimosse 5 colonne, allargate le rimanenti
@@ -35,7 +49,7 @@ const ConfigurationPage = ({
     '90px',  // Titolare (allargata) - ora stelline
     '90px',  // Affidabilità (allargata) - ora stelline
     '90px',  // Fisico (allargata) - ora stelline
-    '70px'   // FMV (allargata, read-only)
+    '70px'   // FVM (allargata, read-only)
   ];
 
   return (
@@ -94,14 +108,25 @@ const ConfigurationPage = ({
           }}>
             {tableHeaders.map((header, index) => (
               <div 
-                key={header} 
+                key={typeof header === 'string' ? header : header.label} 
                 style={{ 
                   textAlign: index === 0 ? 'left' : 'center',
                   width: columnWidths[index],
                   paddingLeft: index === 0 ? theme.spacing[2] : 0
                 }}
               >
-                {header}
+                <SortableHeader
+                  field={typeof header === 'object' ? header.field : null}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                  sortable={typeof header === 'object' ? header.sortable : false}
+                  style={{
+                    justifyContent: index === 0 ? 'flex-start' : 'center'
+                  }}
+                >
+                  {typeof header === 'string' ? header : header.label}
+                </SortableHeader>
               </div>
             ))}
           </div>
@@ -111,7 +136,7 @@ const ConfigurationPage = ({
             maxHeight: 'calc(100vh - 200px)', // Tabella più alta, occupa quasi tutto lo schermo
             overflowY: 'auto'
           }}>
-            {filteredPlayers.map((player, index) => {
+            {sortedData.map((player, index) => {
               const isConfigured = getPlayerConfig(player.id, 'budget') || 
                                   getPlayerConfig(player.id, 'prezzo') !== player.quotazione;
               
@@ -129,7 +154,7 @@ const ConfigurationPage = ({
           </div>
 
           {/* Empty State */}
-          {filteredPlayers.length === 0 && (
+          {sortedData.length === 0 && (
             <div style={{
               textAlign: 'center',
               padding: theme.spacing[12],
