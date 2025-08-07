@@ -5,6 +5,7 @@ import { getRoleColor } from './ConfigurationHeader';
 import AuctionPlayerRow from './AuctionPlayerRow';
 import SortableHeader from './SortableHeader';
 import { useSorting } from '../hooks/useSorting';
+import { roleMap } from '../constants/roles';
 
 const AuctionPlayersView = ({
   filteredPlayers,
@@ -17,20 +18,6 @@ const AuctionPlayersView = ({
   const { sortedData, sortField, sortDirection, handleSort } = useSorting(filteredPlayers, getPlayerConfig);
 
   const getRoleDisplayName = (role) => {
-    const roleMap = {
-      'T': 'Trequartisti',
-      'A': 'Attaccanti',
-      'C': 'Centrocampisti',
-      'W': 'Esterni',
-      'M': 'Mediani',
-      'Dc': 'Difensori Centrali',
-      'Ds': 'Difensori Sinistri',
-      'Dd': 'Difensori Destri',
-      'B': 'Braccetti',
-      'E': 'Esterni Difensivi',
-      'Por': 'Portieri',
-      'Pc': 'Prima Punta'
-    };
     return roleMap[role] || role;
   };
 

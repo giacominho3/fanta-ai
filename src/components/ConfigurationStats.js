@@ -2,6 +2,7 @@ import React from 'react';
 import { theme } from '../theme/theme';
 import { Text } from './ui/Typography';
 import { getRoleColor } from './ConfigurationHeader';
+import { roleMap } from '../constants/roles';
 
 const ConfigurationStats = ({ 
   totalPlayers, 
@@ -11,20 +12,6 @@ const ConfigurationStats = ({
   filteredPlayersCount 
 }) => {
   const getRoleDisplayName = (role) => {
-    const roleMap = {
-      'T': 'Trequartisti',
-      'A': 'Attaccanti',
-      'C': 'Centrocampisti',
-      'W': 'Esterni',
-      'M': 'Mediani',
-      'Dc': 'Difensori Centrali',
-      'Ds': 'Difensori Sinistri',
-      'Dd': 'Difensori Destri',
-      'B': 'Braccetti',
-      'E': 'Esterni Difensivi',
-      'Por': 'Portieri',
-      'Pc': 'Prima Punta'
-    };
     return roleMap[role] || role;
   };
 

@@ -1,30 +1,6 @@
 import React from 'react';
 import { theme } from '../../theme/theme';
-
-// Mappa dei colori per ruolo (importata da ConfigurationHeader.js)
-const ROLE_COLORS = {
-  // Portiere -> oro
-  'Por': '#F59E0B',
-  
-  // Difensori -> verde chiaro
-  'Dc': '#10B981',
-  'B': '#10B981', 
-  'Ds': '#10B981',
-  'Dd': '#10B981',
-  
-  // Centrocampisti -> blu chiaro
-  'E': '#3B82F6',
-  'M': '#3B82F6',
-  'C': '#3B82F6',
-  
-  // Trequartisti/Esterni -> viola
-  'W': '#8B5CF6',
-  'T': '#8B5CF6',
-  
-  // Attaccanti -> rosso
-  'A': '#EF4444',
-  'Pc': '#EF4444'
-};
+import { ROLE_COLORS } from '../../constants/roles';
 
 const getRoleColor = (roleKey) => {
   return ROLE_COLORS[roleKey] || theme.colors.gray[500];
