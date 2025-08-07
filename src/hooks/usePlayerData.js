@@ -3,6 +3,50 @@ import * as XLSX from 'xlsx';
 
 const STORAGE_KEY = 'fantaai_player_data';
 
+// Definizione delle fasce di difensività (più basso = più difensivo)
+const ROLE_DEFENSIVE_TIER = {
+  // 1° fascia - più difensiva
+  'Por': 1,
+  
+  // 2° fascia
+  'Dc': 2,
+  'Dd': 2,
+  'Ds': 2,
+  'B': 2,
+  
+  // 3° fascia
+  'E': 3,
+  'M': 3,
+  
+  // 4° fascia
+  'C': 4,
+  
+  // 5° fascia
+  'W': 5,
+  'T': 5,
+  
+  // 6° fascia - più offensiva
+  'A': 6,
+  'Pc': 6
+};
+
+// Funzione per determinare se un giocatore dovrebbe apparire in un determinato ruolo
+const shouldPlayerAppearInRole = (playerRoles, targetRole) => {
+  if (!playerRoles || !playerRoles.includes(targetRole)) {
+    return false; // Il giocatore non ha questo ruolo
+  }
+  
+  // Trova la fascia più difensiva tra i ruoli del giocatore
+  const mostDefensiveTier = Math.min(
+    ...playerRoles
+      .filter(role => ROLE_DEFENSIVE_TIER[role] !== undefined)
+      .map(role => ROLE_DEFENSIVE_TIER[role])
+  );
+  
+  // Il giocatore appare nel ruolo solo se appartiene alla fascia più difensiva
+  return ROLE_DEFENSIVE_TIER[targetRole] === mostDefensiveTier;
+};
+
 export const usePlayerData = () => {
   const [players, setPlayers] = useState([]);
   const [filteredPlayers, setFilteredPlayers] = useState([]);
@@ -20,9 +64,9 @@ export const usePlayerData = () => {
           if (savedPlayers && savedPlayers.length > 0) {
             setPlayers(savedPlayers);
             setSelectedRole(savedRole || 'T');
-            // Filtra per il ruolo salvato
+            // Filtra per il ruolo salvato usando la nuova logica
             const filtered = savedPlayers.filter(player => 
-              player.rmArray && player.rmArray.includes(savedRole || 'T')
+              shouldPlayerAppearInRole(player.rmArray, savedRole || 'T')
             );
             setFilteredPlayers(filtered);
             console.log(`✓ Caricati ${savedPlayers.length} giocatori dal salvataggio locale`);
@@ -83,7 +127,12 @@ export const usePlayerData = () => {
       setPlayers(processedPlayers);
       const defaultRole = 'T';
       setSelectedRole(defaultRole);
-      setFilteredPlayers(processedPlayers.filter(p => p.rmArray.includes(defaultRole)));
+      
+      // Applica la nuova logica di filtraggio
+      const filtered = processedPlayers.filter(player => 
+        shouldPlayerAppearInRole(player.rmArray, defaultRole)
+      );
+      setFilteredPlayers(filtered);
       
       // Salva automaticamente dopo il caricamento
       saveData(processedPlayers, defaultRole);
@@ -91,6 +140,7 @@ export const usePlayerData = () => {
       onSuccess?.(processedPlayers, file.name);
       
       console.log('Giocatori processati e salvati:', processedPlayers.slice(0, 5));
+      console.log(`✓ Filtro difensività applicato: ${filtered.length} giocatori per ruolo ${defaultRole}`);
       
     } catch (error) {
       console.error('Errore nel processare Excel:', error);
@@ -102,7 +152,11 @@ export const usePlayerData = () => {
 
   const filterPlayersByRole = useCallback((role) => {
     setSelectedRole(role);
-    let filtered = players.filter(player => player.rmArray.includes(role));
+    
+    // Applica il filtro per difensività: i giocatori appaiono solo nei ruoli più difensivi che possiedono
+    let filtered = players.filter(player => 
+      shouldPlayerAppearInRole(player.rmArray, role)
+    );
     
     if (searchTerm) {
       filtered = filtered.filter(player => 
@@ -111,6 +165,13 @@ export const usePlayerData = () => {
     }
     
     setFilteredPlayers(filtered);
+    
+    // Debug log per verificare il comportamento
+    const multiRolePlayers = players.filter(p => p.rmArray && p.rmArray.length > 1);
+    console.log(`🔍 Filtraggio ruolo ${role}:`);
+    console.log(`- Giocatori totali: ${players.length}`);
+    console.log(`- Giocatori multiruolo: ${multiRolePlayers.length}`);
+    console.log(`- Giocatori mostrati per ${role}: ${filtered.length}`);
     
     // Salva il ruolo selezionato
     if (players.length > 0) {
@@ -121,9 +182,10 @@ export const usePlayerData = () => {
   const handleSearch = useCallback((term) => {
     setSearchTerm(term);
     if (term) {
+      // Applica sia il filtro di ricerca che quello di difensività
       const filtered = players.filter(player => 
         player.nome.toLowerCase().includes(term.toLowerCase()) &&
-        player.rmArray.includes(selectedRole)
+        shouldPlayerAppearInRole(player.rmArray, selectedRole)
       );
       setFilteredPlayers(filtered);
     } else {
