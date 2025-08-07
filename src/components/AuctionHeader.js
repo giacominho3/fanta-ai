@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Search, Users, List, BarChart3, Download } from 'lucide-react';
+import { ArrowLeft, Search, Users, List, LandPlot } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Button from './ui/Button';
 import Input from './ui/Input';
@@ -119,7 +119,7 @@ const AuctionHeader = ({
                 fontWeight: theme.typography.fontWeight.medium
               }}
             >
-              ⚽
+              <LandPlot size={16} />
               La mia rosa
             </Button>
           </div>
