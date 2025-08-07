@@ -74,6 +74,12 @@ const TeamBadge = ({ teamName, size = theme.spacing[8] }) => {
   );
 };
 
+// Funzione per ottenere il colore della squadra di asta
+const getAuctionTeamColor = (teamId) => {
+  const team = AUCTION_TEAMS.find(team => team.id === teamId);
+  return team ? team.color : theme.colors.accent.red; // fallback al rosso se non trova la squadra
+};
+
 const AuctionPlayerRow = ({ 
   player, 
   index, 
@@ -90,6 +96,10 @@ const AuctionPlayerRow = ({
 
   const currentBudget = getPlayerConfig(player.id, 'budget', '0');
   const calculatedPrice = calculatePrice(currentBudget);
+
+  // Ottieni il colore della squadra di asta
+  const teamId = getPlayerAuction(player.id, 'team');
+  const auctionTeamColor = getAuctionTeamColor(teamId);
 
   // Configurazione dei campi (tutti read-only tranne team e price)
   const displayFields = [
@@ -121,8 +131,8 @@ const AuctionPlayerRow = ({
     <div style={{
       borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
       padding: theme.spacing[3],
-      background: isAuctioned ? 'rgba(100, 100, 100, 0.2)' : 'transparent',
-      borderLeft: isAuctioned ? `2px solid ${theme.colors.accent.red}` : 'none'
+      background: isAuctioned ? `${auctionTeamColor}20` : 'transparent', // Usa il colore della squadra con opacità
+      borderLeft: isAuctioned ? `3px solid ${auctionTeamColor}` : 'none' // Bordo più spesso e colorato
     }}>
       <div style={{
         display: 'grid',
@@ -158,7 +168,7 @@ const AuctionPlayerRow = ({
           
           <Bookmark 
             size={12} 
-            color={isAuctioned ? theme.colors.accent.red : theme.colors.dark.text.tertiary}
+            color={isAuctioned ? auctionTeamColor : theme.colors.dark.text.tertiary} // Usa il colore della squadra
             style={{ flexShrink: 0 }}
           />
           
