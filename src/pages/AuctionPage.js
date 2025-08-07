@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Users, List } from 'lucide-react';
 import { theme, gradients } from '../theme/theme';
-import Button from '../components/ui/Button';
 import { useAuctionData } from '../hooks/useAuctionData';
 import AuctionHeader from '../components/AuctionHeader';
 import AuctionPlayersView from '../components/AuctionPlayersView';
 import AuctionTeamsView from '../components/AuctionTeamsView';
+import MyTeamView from '../components/MyTeamView';
 
 const AuctionPage = ({
   filteredPlayers,
@@ -18,7 +17,7 @@ const AuctionPage = ({
   roles,
   players
 }) => {
-  const [currentView, setCurrentView] = useState('players'); // 'players' o 'teams'
+  const [currentView, setCurrentView] = useState('players'); // 'players' o 'teams' o 'myteam'
   
   const {
     auctionData,
@@ -71,12 +70,16 @@ const AuctionPage = ({
             updatePlayerAuction={updatePlayerAuction}
             selectedRole={selectedRole}
           />
-        ) : (
+        ) : currentView === 'teams' ? (
           <AuctionTeamsView
             getTeamPlayers={getTeamPlayers}
             auctionStats={auctionStats}
           />
-        )}
+        ) : currentView === 'myteam' ? (
+          <MyTeamView
+            getTeamPlayers={getTeamPlayers}
+          />
+        ) : null}
       </div>
     </div>
   );

@@ -109,6 +109,19 @@ const AuctionHeader = ({
               <Users size={16} />
               Squadre
             </Button>
+            <Button
+              variant={currentView === 'myteam' ? 'primary' : 'ghost'}
+              size="small"
+              onClick={() => onViewChange('myteam')}
+              style={{
+                borderRadius: theme.borderRadius.full,
+                fontSize: theme.typography.fontSize.sm,
+                fontWeight: theme.typography.fontWeight.medium
+              }}
+            >
+              ⚽
+              La mia rosa
+            </Button>
           </div>
         </div>
 
