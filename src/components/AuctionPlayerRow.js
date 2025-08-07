@@ -5,30 +5,7 @@ import Input from './ui/Input';
 import RoleBadges from './ui/RoleBadge';
 import StarRating from './ui/StarRating';
 import { AUCTION_TEAMS } from '../hooks/useAuctionData';
-
-// TeamBadge component (copied from PlayerRow.js)
-const TEAM_COLORS = {
-  'Atalanta': { primary: '#1E3A8A', secondary: '#000000' },
-  'Bologna': { primary: '#AD0505', secondary: '#042AA6' },
-  'Cagliari': { primary: '#DC2626', secondary: '#1E40AF' },
-  'Como': { primary: '#FFFFFF', secondary: '#1E40AF' },
-  'Cremonese': { primary: '#6B7280', secondary: '#DC2626' },
-  'Fiorentina': { primary: '#7C3AED', secondary: '#7C3AED' },
-  'Genoa': { primary: '#DC2626', secondary: '#1E40AF' },
-  'Inter': { primary: '#000000', secondary: '#1E3A8A' },
-  'Juventus': { primary: '#FFFFFF', secondary: '#000000' },
-  'Lazio': { primary: '#FFFFFF', secondary: '#0EA5E9' },
-  'Lecce': { primary: '#EAB308', secondary: '#DC2626' },
-  'Milan': { primary: '#DC2626', secondary: '#000000' },
-  'Napoli': { primary: '#0EA5E9', secondary: '#0284C7' },
-  'Parma': { primary: '#EAB308', secondary: '#1E40AF' },
-  'Pisa': { primary: '#000000', secondary: '#1E3A8A' },
-  'Roma': { primary: '#DBA400', secondary: '#890000' },
-  'Sassuolo': { primary: '#000000', secondary: '#16A34A' },
-  'Torino': { primary: '#7F1D1D', secondary: '#7F1D1D' },
-  'Udinese': { primary: '#FFFFFF', secondary: '#000000' },
-  'Verona': { primary: '#EAB308', secondary: '#1E40AF' }
-};
+import { TEAM_COLORS } from '../constants/teamColors';
 
 const getTeamColors = (teamName) => {
   const normalizedName = teamName?.trim();
