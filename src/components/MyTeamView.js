@@ -64,7 +64,7 @@ const FieldPosition = ({
           style={{
             width: '80px',
             height: '40px',
-            background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.primary,
+            background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.tertiary,
             border: `2px solid ${theme.colors.dark.border.primary}`,
             borderRadius: theme.borderRadius.base,
             color: 'white',
@@ -99,7 +99,7 @@ const FieldPosition = ({
             top: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
-            background: theme.colors.dark.surface.primary,
+            background: theme.colors.dark.surface.tertiary,
             border: `1px solid ${theme.colors.dark.border.primary}`,
             borderRadius: theme.borderRadius.base,
             maxHeight: '200px',
@@ -113,7 +113,7 @@ const FieldPosition = ({
               style={{
                 padding: theme.spacing[2],
                 cursor: 'pointer',
-                color: theme.colors.dark.text.tertiary,
+                color: "#FFFFFF",
                 fontSize: theme.typography.fontSize.xs,
                 borderBottom: `1px solid ${theme.colors.dark.border.secondary}`
               }}
@@ -127,7 +127,7 @@ const FieldPosition = ({
                 style={{
                   padding: theme.spacing[2],
                   cursor: 'pointer',
-                  color: theme.colors.dark.text.primary,
+                  color: "#FFFFFF",
                   fontSize: theme.typography.fontSize.xs,
                   borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
                   display: 'flex',
@@ -177,7 +177,7 @@ const BenchPosition = ({
         style={{
           width: '100px',
           height: '40px',
-          background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.primary,
+          background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.tertiary,
           border: `2px solid ${theme.colors.dark.border.primary}`,
           borderRadius: theme.borderRadius.base,
           color: 'white',
@@ -212,7 +212,7 @@ const BenchPosition = ({
           top: '100%',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: theme.colors.dark.surface.primary,
+          background: theme.colors.dark.surface.tertiary,
           border: `1px solid ${theme.colors.dark.border.primary}`,
           borderRadius: theme.borderRadius.base,
           maxHeight: '200px',
