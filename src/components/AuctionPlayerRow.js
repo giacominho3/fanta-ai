@@ -252,7 +252,7 @@ const AuctionPlayerRow = ({
           fontSize: theme.typography.fontSize.sm,
           width: columnWidths[9]
         }}>
-          {player.fvm}
+          {Math.round(player.fvm / 2)}
         </div>
 
         {/* Team Dropdown */}
