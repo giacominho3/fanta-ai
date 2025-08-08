@@ -98,8 +98,8 @@ const FieldPosition = ({
         <button
           onClick={() => setIsOpen(!isOpen)}
           style={{
-            width: '85px',
-            height: '42px',
+            width: '90px',
+            height: '45px',
             background: hasPlayer ? roleColor : `${roleColor}40`,
             border: `2px solid ${roleColor}`,
             borderRadius: theme.borderRadius.base,
@@ -127,13 +127,13 @@ const FieldPosition = ({
           <div>{position.role}</div>
           {selectedPlayer && (
             <div style={{
-              fontSize: '9px',
-              opacity: 0.9,
+              fontSize: '11px',
+              opacity: 0.95,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              width: '80px',
-              fontWeight: theme.typography.fontWeight.medium
+              width: '85px',
+              fontWeight: theme.typography.fontWeight.semibold
             }}>
               {selectedPlayer.playerName}
             </div>
@@ -142,19 +142,19 @@ const FieldPosition = ({
 
         {isOpen && (
           <div style={{
-            position: 'absolute',
-            top: '100%',
+            position: 'fixed',
+            top: '50%',
             left: '50%',
-            transform: 'translateX(-50%)',
+            transform: 'translate(-50%, -50%)',
             background: theme.colors.dark.surface.primary,
-            border: `1px solid ${theme.colors.dark.border.primary}`,
+            border: `2px solid ${theme.colors.dark.border.primary}`,
             borderRadius: theme.borderRadius.lg,
-            maxHeight: '200px',
+            maxHeight: '300px',
             overflowY: 'auto',
-            minWidth: '180px',
-            zIndex: 1000,
-            boxShadow: theme.shadows.xl,
-            marginTop: '4px'
+            minWidth: '200px',
+            zIndex: 9999,
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(8px)'
           }}>
             <div
               onClick={() => handleSelect(null)}
@@ -723,14 +723,6 @@ const MyTeamView = ({ getTeamPlayers }) => {
                         }}>
                           FM {playerData.price || 0}
                         </span>
-                        {isInLineup && (
-                          <span style={{
-                            color: theme.colors.primary[400],
-                            fontSize: theme.typography.fontSize.xs
-                          }}>
-                            ⚽ In campo
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
