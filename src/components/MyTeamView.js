@@ -3,8 +3,40 @@ import { theme } from '../theme/theme';
 import { Text } from './ui/Typography';
 import Card from './ui/Card';
 import { getRoleColor } from './ConfigurationHeader';
-import { ROLES } from '../constants/roles';
+import { ROLES, ROLE_COLORS } from '../constants/roles';
 import { FORMATIONS } from '../constants/formations';
+
+// Gerarchia offensiva dei ruoli (più alto = più offensivo)
+const ROLE_HIERARCHY = {
+  'Por': 1,
+  'Dc': 2, 'Ds': 2, 'Dd': 2, 'B': 2,
+  'E': 3,
+  'M': 4,
+  'C': 5,
+  'W': 6,
+  'T': 7,
+  'A': 8,
+  'Pc': 9
+};
+
+// Funzione per ottenere il colore del ruolo più offensivo
+const getMostOffensiveRoleColor = (roleString) => {
+  if (!roleString) return theme.colors.dark.surface.tertiary;
+  
+  const roles = roleString.split('/');
+  let mostOffensiveRole = roles[0];
+  let highestHierarchy = ROLE_HIERARCHY[roles[0]] || 0;
+  
+  roles.forEach(role => {
+    const hierarchy = ROLE_HIERARCHY[role] || 0;
+    if (hierarchy > highestHierarchy) {
+      highestHierarchy = hierarchy;
+      mostOffensiveRole = role;
+    }
+  });
+  
+  return ROLE_COLORS[mostOffensiveRole] || theme.colors.dark.surface.tertiary;
+};
 
 // Mappa i ruoli compositi ai ruoli singoli per il filtraggio
 const getRolesFromComposite = (compositeRole) => {
@@ -50,43 +82,58 @@ const FieldPosition = ({
     setIsOpen(false);
   };
 
+  // Ottieni il colore basato sul ruolo più offensivo
+  const roleColor = getMostOffensiveRoleColor(position.role);
+  const hasPlayer = !!selectedPlayer;
+
   return (
     <div style={{
       position: 'absolute',
       left: `${position.x}%`,
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      zIndex: 10
+      zIndex: hasPlayer ? 15 : 10
     }}>
       <div style={{ position: 'relative' }}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           style={{
-            width: '80px',
-            height: '40px',
-            background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.tertiary,
-            border: `2px solid ${theme.colors.dark.border.primary}`,
+            width: '85px',
+            height: '42px',
+            background: hasPlayer ? roleColor : `${roleColor}40`,
+            border: `2px solid ${roleColor}`,
             borderRadius: theme.borderRadius.base,
             color: 'white',
             fontSize: theme.typography.fontSize.xs,
-            fontWeight: theme.typography.fontWeight.semibold,
+            fontWeight: theme.typography.fontWeight.bold,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-            gap: '2px'
+            gap: '2px',
+            boxShadow: hasPlayer ? theme.shadows.md : theme.shadows.sm,
+            transition: theme.transitions.fast
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.boxShadow = theme.shadows.lg;
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'scale(1)';
+            e.target.style.boxShadow = hasPlayer ? theme.shadows.md : theme.shadows.sm;
           }}
         >
           <div>{position.role}</div>
           {selectedPlayer && (
             <div style={{
-              fontSize: '8px',
-              opacity: 0.8,
+              fontSize: '9px',
+              opacity: 0.9,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              width: '76px'
+              width: '80px',
+              fontWeight: theme.typography.fontWeight.medium
             }}>
               {selectedPlayer.playerName}
             </div>
@@ -99,23 +146,32 @@ const FieldPosition = ({
             top: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
-            background: theme.colors.dark.surface.tertiary,
+            background: theme.colors.dark.surface.primary,
             border: `1px solid ${theme.colors.dark.border.primary}`,
-            borderRadius: theme.borderRadius.base,
+            borderRadius: theme.borderRadius.lg,
             maxHeight: '200px',
             overflowY: 'auto',
-            minWidth: '150px',
+            minWidth: '180px',
             zIndex: 1000,
-            boxShadow: theme.shadows.lg
+            boxShadow: theme.shadows.xl,
+            marginTop: '4px'
           }}>
             <div
               onClick={() => handleSelect(null)}
               style={{
-                padding: theme.spacing[2],
+                padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
                 cursor: 'pointer',
-                color: "#FFFFFF",
-                fontSize: theme.typography.fontSize.xs,
-                borderBottom: `1px solid ${theme.colors.dark.border.secondary}`
+                color: theme.colors.dark.text.primary,
+                fontSize: theme.typography.fontSize.sm,
+                fontWeight: theme.typography.fontWeight.medium,
+                borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
+                transition: theme.transitions.fast
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = theme.colors.dark.surface.secondary;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
               }}
             >
               Nessuno
@@ -125,14 +181,16 @@ const FieldPosition = ({
                 key={player.playerId}
                 onClick={() => handleSelect(player.playerId)}
                 style={{
-                  padding: theme.spacing[2],
+                  padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
                   cursor: 'pointer',
-                  color: "#FFFFFF",
-                  fontSize: theme.typography.fontSize.xs,
+                  color: theme.colors.dark.text.primary,
+                  fontSize: theme.typography.fontSize.sm,
+                  fontWeight: theme.typography.fontWeight.medium,
                   borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  transition: theme.transitions.fast
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.background = theme.colors.dark.surface.secondary;
@@ -141,10 +199,13 @@ const FieldPosition = ({
                   e.target.style.background = 'transparent';
                 }}
               >
-                <span>{player.playerName}</span>
+                <span style={{ fontWeight: theme.typography.fontWeight.semibold }}>
+                  {player.playerName}
+                </span>
                 <span style={{ 
                   color: getRoleColor(player.playerRoles[0]),
-                  fontSize: '8px'
+                  fontSize: theme.typography.fontSize.xs,
+                  fontWeight: theme.typography.fontWeight.bold
                 }}>
                   {player.playerRoles.join(', ')}
                 </span>
@@ -175,31 +236,39 @@ const BenchPosition = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
-          width: '100px',
-          height: '40px',
+          width: '110px',
+          height: '44px',
           background: selectedPlayer ? getRoleColor(selectedPlayer.playerRoles[0]) : theme.colors.dark.surface.tertiary,
           border: `2px solid ${theme.colors.dark.border.primary}`,
           borderRadius: theme.borderRadius.base,
           color: 'white',
           fontSize: theme.typography.fontSize.xs,
-          fontWeight: theme.typography.fontWeight.semibold,
+          fontWeight: theme.typography.fontWeight.bold,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexDirection: 'column',
-          gap: '2px'
+          gap: '2px',
+          transition: theme.transitions.fast
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.transform = 'scale(1.02)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.transform = 'scale(1)';
         }}
       >
         <div>Panch {index + 1}</div>
         {selectedPlayer && (
           <div style={{
-            fontSize: '8px',
-            opacity: 0.8,
+            fontSize: '9px',
+            opacity: 0.9,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            width: '96px'
+            width: '105px',
+            fontWeight: theme.typography.fontWeight.medium
           }}>
             {selectedPlayer.playerName}
           </div>
@@ -212,23 +281,32 @@ const BenchPosition = ({
           top: '100%',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: theme.colors.dark.surface.tertiary,
+          background: theme.colors.dark.surface.primary,
           border: `1px solid ${theme.colors.dark.border.primary}`,
-          borderRadius: theme.borderRadius.base,
+          borderRadius: theme.borderRadius.lg,
           maxHeight: '200px',
           overflowY: 'auto',
-          minWidth: '150px',
+          minWidth: '180px',
           zIndex: 1000,
-          boxShadow: theme.shadows.lg
+          boxShadow: theme.shadows.xl,
+          marginTop: '4px'
         }}>
           <div
             onClick={() => handleSelect(null)}
             style={{
-              padding: theme.spacing[2],
+              padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
               cursor: 'pointer',
-              color: theme.colors.dark.text.tertiary,
-              fontSize: theme.typography.fontSize.xs,
-              borderBottom: `1px solid ${theme.colors.dark.border.secondary}`
+              color: theme.colors.dark.text.primary,
+              fontSize: theme.typography.fontSize.sm,
+              fontWeight: theme.typography.fontWeight.medium,
+              borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
+              transition: theme.transitions.fast
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = theme.colors.dark.surface.secondary;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
             }}
           >
             Nessuno
@@ -238,14 +316,16 @@ const BenchPosition = ({
               key={player.playerId}
               onClick={() => handleSelect(player.playerId)}
               style={{
-                padding: theme.spacing[2],
+                padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
                 cursor: 'pointer',
                 color: theme.colors.dark.text.primary,
-                fontSize: theme.typography.fontSize.xs,
+                fontSize: theme.typography.fontSize.sm,
+                fontWeight: theme.typography.fontWeight.medium,
                 borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                transition: theme.transitions.fast
               }}
               onMouseEnter={(e) => {
                 e.target.style.background = theme.colors.dark.surface.secondary;
@@ -254,10 +334,13 @@ const BenchPosition = ({
                 e.target.style.background = 'transparent';
               }}
             >
-              <span>{player.playerName}</span>
+              <span style={{ fontWeight: theme.typography.fontWeight.semibold }}>
+                {player.playerName}
+              </span>
               <span style={{ 
                 color: getRoleColor(player.playerRoles[0]),
-                fontSize: '8px'
+                fontSize: theme.typography.fontSize.xs,
+                fontWeight: theme.typography.fontWeight.bold
               }}>
                 {player.playerRoles.join(', ')}
               </span>
@@ -328,11 +411,53 @@ const MyTeamView = ({ getTeamPlayers }) => {
 
   const sortedTeamPlayers = sortPlayersByRole([...myTeamPlayers]);
 
-  return (
-    <div style={{ display: 'flex', gap: theme.spacing[6], height: 'calc(100vh - 200px)' }}>
+  // Crea array di 28 slot per i giocatori
+  const createPlayerSlots = () => {
+    const slots = [];
+    
+    // Aggiungi i giocatori esistenti
+    sortedTeamPlayers.forEach((playerData, index) => {
+      const allRoles = playerData.playerRoles || [playerData.playerRole] || ['N/A'];
+      const isInLineup = selectedPlayerIds.includes(playerData.playerId);
       
-      {/* Left Side - Field */}
-      <div style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+      slots.push({
+        type: 'player',
+        data: playerData,
+        roles: allRoles,
+        isInLineup,
+        index
+      });
+    });
+    
+    // Aggiungi slot vuoti fino a 28
+    for (let i = sortedTeamPlayers.length; i < 28; i++) {
+      slots.push({
+        type: 'empty',
+        index: i
+      });
+    }
+    
+    return slots;
+  };
+
+  const playerSlots = createPlayerSlots();
+
+  return (
+    <div style={{ 
+      display: 'flex', 
+      gap: theme.spacing[6], 
+      minHeight: 'calc(100vh - 150px)',
+      height: 'auto',
+      paddingBottom: theme.spacing[8]
+    }}>
+      
+      {/* Left Side - Field e Panchina */}
+      <div style={{ 
+        flex: '1', 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '800px'
+      }}>
         
         {/* Formation Selector */}
         <Card variant="glass" style={{ marginBottom: theme.spacing[4], padding: theme.spacing[4] }}>
@@ -370,11 +495,11 @@ const MyTeamView = ({ getTeamPlayers }) => {
 
         {/* Field */}
         <Card variant="glass" style={{ 
-          flex: 1, 
           background: 'linear-gradient(135deg, #22c55e, #16a34a)',
           position: 'relative',
-          minHeight: '500px',
-          overflow: 'visible'
+          height: '500px',
+          overflow: 'visible',
+          marginBottom: theme.spacing[4]
         }}>
           
           {/* Field Lines */}
@@ -465,23 +590,25 @@ const MyTeamView = ({ getTeamPlayers }) => {
           ))}
         </Card>
 
-        {/* Bench */}
+        {/* Bench - Ora sempre visibile */}
         <Card variant="glass" style={{ 
-          marginTop: theme.spacing[4], 
-          padding: theme.spacing[4] 
+          padding: theme.spacing[4],
+          height: '250px'
         }}>
           <Text style={{ 
-            marginBottom: theme.spacing[3],
+            marginBottom: theme.spacing[4],
             fontWeight: theme.typography.fontWeight.semibold
           }}>
-            Panchina
+            Panchina (12 giocatori)
           </Text>
           <div style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap',
-            gap: theme.spacing[2]
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: theme.spacing[3],
+            height: '180px',
+            overflowY: 'auto'
           }}>
-            {Array.from({ length: 7 }).map((_, index) => {
+            {Array.from({ length: 12 }).map((_, index) => {
               const selectedPlayerId = bench[index];
               const selectedPlayer = selectedPlayerId ? getPlayerById(selectedPlayerId) : null;
               
@@ -499,12 +626,18 @@ const MyTeamView = ({ getTeamPlayers }) => {
         </Card>
       </div>
 
-      {/* Right Side - Player List */}
-      <div style={{ width: '400px' }}>
-        <Card variant="glass" style={{ height: '100%', overflow: 'hidden' }}>
+      {/* Right Side - Player List con 28 slot sempre visibili */}
+      <div style={{ width: '400px', height: 'calc(100vh - 150px)' }}>
+        <Card variant="glass" style={{ 
+          height: '100%', 
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
           <div style={{
             padding: theme.spacing[4],
-            borderBottom: `1px solid ${theme.colors.dark.border.secondary}`
+            borderBottom: `1px solid ${theme.colors.dark.border.secondary}`,
+            flexShrink: 0
           }}>
             <Text style={{ 
               fontWeight: theme.typography.fontWeight.semibold,
@@ -515,108 +648,121 @@ const MyTeamView = ({ getTeamPlayers }) => {
           </div>
           
           <div style={{ 
-            padding: theme.spacing[4], 
-            maxHeight: 'calc(100% - 80px)', 
-            overflowY: 'auto' 
+            flex: 1,
+            overflowY: 'auto',
+            padding: 0
           }}>
-            {sortedTeamPlayers.map((playerData, index) => {
-              const allRoles = playerData.playerRoles || [playerData.playerRole] || ['N/A'];
-              const isInLineup = selectedPlayerIds.includes(playerData.playerId);
-              
-              return (
-                <div
-                  key={index}
-                  style={{
-                    background: isInLineup 
-                      ? 'rgba(34, 197, 94, 0.2)' 
-                      : theme.colors.dark.surface.secondary,
-                    borderRadius: theme.borderRadius.base,
-                    padding: theme.spacing[3],
-                    marginBottom: theme.spacing[2],
-                    border: isInLineup 
-                      ? `1px solid ${theme.colors.primary[500]}` 
-                      : `1px solid ${theme.colors.dark.border.primary}`
-                  }}
-                >
-                  <div style={{
-                    color: theme.colors.dark.text.primary,
-                    fontSize: theme.typography.fontSize.sm,
-                    fontWeight: theme.typography.fontWeight.semibold,
-                    marginBottom: theme.spacing[1]
-                  }}>
-                    {playerData.playerName || `Player ${playerData.playerId}`}
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
+            {playerSlots.map((slot, index) => {
+              if (slot.type === 'player') {
+                const { data: playerData, roles: allRoles, isInLineup } = slot;
+                
+                return (
+                  <div
+                    key={`player-${index}`}
+                    style={{
+                      background: isInLineup 
+                        ? 'rgba(34, 197, 94, 0.2)' 
+                        : theme.colors.dark.surface.secondary,
+                      padding: theme.spacing[3],
+                      margin: 0,
+                      borderBottom: `1px solid ${theme.colors.dark.border.primary}`,
+                      borderLeft: isInLineup 
+                        ? `3px solid ${theme.colors.primary[500]}` 
+                        : 'none',
+                      width: '100%'
+                    }}
+                  >
                     <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: theme.spacing[1]
+                      color: theme.colors.dark.text.primary,
+                      fontSize: theme.typography.fontSize.sm,
+                      fontWeight: theme.typography.fontWeight.semibold,
+                      marginBottom: theme.spacing[1]
                     }}>
-                      {allRoles.map((role, roleIndex) => (
-                        <span
-                          key={roleIndex}
-                          style={{
-                            color: getRoleColor(role),
-                            fontSize: theme.typography.fontSize.xs,
-                            fontWeight: theme.typography.fontWeight.bold
-                          }}
-                        >
-                          {role}
-                          {roleIndex < allRoles.length - 1 && (
-                            <span style={{ 
-                              color: theme.colors.dark.text.tertiary,
-                              fontWeight: theme.typography.fontWeight.normal 
-                            }}>
-                              ,
-                            </span>
-                          )}
-                        </span>
-                      ))}
+                      {playerData.playerName || `Player ${playerData.playerId}`}
                     </div>
                     <div style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: theme.spacing[2]
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                      <span style={{
-                        color: theme.colors.accent.orange,
-                        fontSize: theme.typography.fontSize.xs,
-                        fontWeight: theme.typography.fontWeight.bold
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: theme.spacing[1]
                       }}>
-                        FM {playerData.price || 0}
-                      </span>
-                      {isInLineup && (
+                        {allRoles.map((role, roleIndex) => (
+                          <span
+                            key={roleIndex}
+                            style={{
+                              color: getRoleColor(role),
+                              fontSize: theme.typography.fontSize.xs,
+                              fontWeight: theme.typography.fontWeight.bold
+                            }}
+                          >
+                            {role}
+                            {roleIndex < allRoles.length - 1 && (
+                              <span style={{ 
+                                color: theme.colors.dark.text.tertiary,
+                                fontWeight: theme.typography.fontWeight.normal 
+                              }}>
+                                ,
+                              </span>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: theme.spacing[2]
+                      }}>
                         <span style={{
-                          color: theme.colors.primary[400],
-                          fontSize: theme.typography.fontSize.xs
+                          color: theme.colors.accent.orange,
+                          fontSize: theme.typography.fontSize.xs,
+                          fontWeight: theme.typography.fontWeight.bold
                         }}>
-                          ⚽ In campo
+                          FM {playerData.price || 0}
                         </span>
-                      )}
+                        {isInLineup && (
+                          <span style={{
+                            color: theme.colors.primary[400],
+                            fontSize: theme.typography.fontSize.xs
+                          }}>
+                            ⚽ In campo
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
+                );
+              } else {
+                // Slot vuoto
+                return (
+                  <div
+                    key={`empty-${index}`}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      padding: theme.spacing[3],
+                      margin: 0,
+                      borderBottom: `1px solid ${theme.colors.dark.border.primary}`,
+                      borderLeft: `1px dashed ${theme.colors.dark.border.primary}`,
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: '60px'
+                    }}
+                  >
+                    <Text color="muted" style={{ 
+                      fontSize: theme.typography.fontSize.sm,
+                      fontStyle: 'italic'
+                    }}>
+                      Slot {index + 1} - Libero
+                    </Text>
+                  </div>
+                );
+              }
             })}
-
-            {sortedTeamPlayers.length === 0 && (
-              <div style={{
-                textAlign: 'center',
-                color: theme.colors.dark.text.tertiary,
-                padding: theme.spacing[8]
-              }}>
-                <div style={{ marginBottom: theme.spacing[2] }}>
-                  Nessun giocatore nella tua rosa
-                </div>
-                <div style={{ fontSize: theme.typography.fontSize.sm }}>
-                  Vai alla vista Giocatori per acquistare i tuoi giocatori
-                </div>
-              </div>
-            )}
           </div>
         </Card>
       </div>
