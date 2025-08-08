@@ -74,7 +74,7 @@ const ConfigurationHeader = ({
               type="text"
               placeholder="Cerca giocatori..."
               value={searchTerm}
-              onChange={(e) => onSearch(e.target.value)}
+              onChange={(e) => onSearch(e.target.value.trim())}
               style={{
                 paddingLeft: '2.5rem',
                 borderRadius: theme.borderRadius.full,

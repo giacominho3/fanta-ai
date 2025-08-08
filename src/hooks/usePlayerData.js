@@ -150,17 +150,20 @@ export const usePlayerData = () => {
     }
   }, [saveData]);
 
-  const filterPlayersByRole = useCallback((role) => {
+  const filterPlayersByRole = useCallback((role, currentSearchTerm = null) => {
     setSelectedRole(role);
+    
+    // Usa il parametro passato o il searchTerm corrente
+    const termToUse = currentSearchTerm !== null ? currentSearchTerm : searchTerm;
     
     // Applica il filtro per difensività: i giocatori appaiono solo nei ruoli più difensivi che possiedono
     let filtered = players.filter(player => 
       shouldPlayerAppearInRole(player.rmArray, role)
     );
     
-    if (searchTerm) {
+    if (termToUse && termToUse.trim()) {
       filtered = filtered.filter(player => 
-        player.nome.toLowerCase().includes(searchTerm.toLowerCase())
+        player.nome.toLowerCase().includes(termToUse.toLowerCase())
       );
     }
     
@@ -172,6 +175,7 @@ export const usePlayerData = () => {
     console.log(`- Giocatori totali: ${players.length}`);
     console.log(`- Giocatori multiruolo: ${multiRolePlayers.length}`);
     console.log(`- Giocatori mostrati per ${role}: ${filtered.length}`);
+    console.log(`- Search term: "${termToUse}"`);
     
     // Salva il ruolo selezionato
     if (players.length > 0) {
@@ -180,16 +184,20 @@ export const usePlayerData = () => {
   }, [players, searchTerm, saveData]);
 
   const handleSearch = useCallback((term) => {
-    setSearchTerm(term);
-    if (term) {
+    const cleanTerm = term.trim();
+    setSearchTerm(cleanTerm);
+    
+    // Passa il termine di ricerca corrente direttamente alla funzione
+    if (cleanTerm && cleanTerm.length > 0) {
       // Applica sia il filtro di ricerca che quello di difensività
       const filtered = players.filter(player => 
-        player.nome.toLowerCase().includes(term.toLowerCase()) &&
+        player.nome.toLowerCase().includes(cleanTerm.toLowerCase()) &&
         shouldPlayerAppearInRole(player.rmArray, selectedRole)
       );
       setFilteredPlayers(filtered);
     } else {
-      filterPlayersByRole(selectedRole);
+      // Passa esplicitamente una stringa vuota per resettare la ricerca
+      filterPlayersByRole(selectedRole, "");
     }
   }, [players, selectedRole, filterPlayersByRole]);
 
