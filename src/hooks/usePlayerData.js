@@ -10,24 +10,26 @@ const ROLE_DEFENSIVE_TIER = {
   
   // 2° fascia
   'Dc': 2,
-  'Dd': 2,
-  'Ds': 2,
   'B': 2,
-  
+
   // 3° fascia
-  'E': 3,
-  'M': 3,
+  'Dd': 3,
+  'Ds': 3,
   
   // 4° fascia
-  'C': 4,
+  'E': 4,
+  'M': 4,
   
   // 5° fascia
-  'W': 5,
-  'T': 5,
+  'C': 5,
   
-  // 6° fascia - più offensiva
-  'A': 6,
-  'Pc': 6
+  // 6° fascia
+  'W': 6,
+  'T': 6,
+  
+  // 7° fascia - più offensiva
+  'A': 7,
+  'Pc': 7
 };
 
 // Funzione per determinare se un giocatore dovrebbe apparire in un determinato ruolo
