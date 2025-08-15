@@ -230,8 +230,9 @@ const PlayerRow = ({
           justifyContent: 'center'
         }}>
           <div style={{
-            background: theme.colors.accent.orange,
-            color: 'white',
+            background: 'rgba(34, 197, 94, 0.2)',
+            color: theme.colors.primary[400],
+            border: `1px solid ${theme.colors.primary[500]}`,
             textAlign: 'center',
             borderRadius: theme.borderRadius.full,
             padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
@@ -256,16 +257,17 @@ const PlayerRow = ({
               onChange={(e) => updatePlayerConfig(player.id, 'budget', e.target.value)}
               placeholder="0"
               style={{
-                background: theme.colors.secondary[600],
-                color: 'white',
+                background: 'rgba(34, 197, 94, 0.2)',
+                color: theme.colors.primary[400],
+                border: `1px solid ${theme.colors.primary[500]}`,
                 textAlign: 'center',
-                borderRadius: theme.borderRadius.base,
+                fontFamily: 'Manrope',
+                borderRadius: theme.borderRadius.full,
                 padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-                paddingRight: '25px', // Spazio per il simbolo %
+                paddingRight: '0px', // Spazio per il simbolo %
                 width: '80px',
                 fontSize: theme.typography.fontSize.xs,
                 fontWeight: theme.typography.fontWeight.semibold,
-                border: '0'
               }}
             />
             <span style={{
@@ -273,7 +275,8 @@ const PlayerRow = ({
               right: '8px',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: 'white',
+              color: theme.colors.primary[400],
+              fontFamily: 'Manrope',
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold,
               pointerEvents: 'none'
@@ -287,7 +290,7 @@ const PlayerRow = ({
         <div style={{ 
           width: columnWidths[4],
           display: 'flex',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}>
           <Input
             type="number"
@@ -295,15 +298,16 @@ const PlayerRow = ({
             onChange={(e) => updatePlayerConfig(player.id, 'pmal', e.target.value)}
             placeholder="0"
             style={{
-              background: 'rgba(37, 99, 235, 0.8)',
-              color: 'white',
+              background: 'rgba(34, 197, 94, 0.2)',
+              color: theme.colors.primary[400],
+              border: `1px solid ${theme.colors.primary[500]}`,
               textAlign: 'center',
-              borderRadius: theme.borderRadius.base,
+              borderRadius: theme.borderRadius.full,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
               width: '60px',
               fontSize: theme.typography.fontSize.xs,
+              fontFamily: 'Manrope',
               fontWeight: theme.typography.fontWeight.semibold,
-              border: '0'
             }}
           />
         </div>

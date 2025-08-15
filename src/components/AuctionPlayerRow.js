@@ -201,14 +201,16 @@ const AuctionPlayerRow = ({
             justifyContent: 'center'
           }}>
             <div style={{
-              background: config.color,
-              color: 'white',
+              background: 'rgba(34, 197, 94, 0.2)',
+              color: theme.colors.primary[400],
+              border: `1px solid ${theme.colors.primary[500]}`,
               textAlign: 'center',
-              borderRadius: config.field === 'prezzo' ? theme.borderRadius.full : theme.borderRadius.base,
+              borderRadius: theme.borderRadius.full,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
               width: config.field === 'budget' ? '80px' : '60px',
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold,
+              fontFamily: 'Manrope',
               position: 'relative'
             }}>
               {config.field === 'budget' && config.value !== '-' ? `${config.value}%` : config.value}
@@ -287,14 +289,16 @@ const AuctionPlayerRow = ({
             onChange={(e) => updatePlayerAuction(player.id, 'price', e.target.value)}
             placeholder="FM"
             style={{
-              background: theme.colors.accent.orange,
-              color: 'white',
+              background: 'rgba(34, 197, 94, 0.2)',
+              color: theme.colors.primary[400],
+              border: `1px solid ${theme.colors.primary[500]}`,
               textAlign: 'center',
               borderRadius: theme.borderRadius.base,
               padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
               width: '80px',
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold,
+              fontFamily: 'Manrope',
               border: '0'
             }}
           />
