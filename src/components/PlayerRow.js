@@ -1,9 +1,9 @@
 import React from 'react';
-import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
 import RoleBadges from './ui/RoleBadge';
 import StarRating from './ui/StarRating';
+import PlayerNoteSelector from './PlayerNoteSelector';
 import { TEAM_COLORS } from '../constants/teamColors';
 
 // Funzione per ottenere i colori di una squadra
@@ -172,12 +172,6 @@ const PlayerRow = ({
             {index + 1}
           </div>
           
-          <Bookmark 
-            size={12} 
-            color={isConfigured ? theme.colors.primary[400] : theme.colors.dark.text.tertiary}
-            style={{ flexShrink: 0 }}
-          />
-          
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -205,9 +199,20 @@ const PlayerRow = ({
                 fontSize: theme.typography.fontSize.sm,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
-                textOverflow: 'ellipsis'
+                textOverflow: 'ellipsis',
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing[2]
               }}>
                 {player.nome}
+                
+                {/* PlayerNoteSelector posizionato alla destra del nome */}
+                <PlayerNoteSelector
+                  value={getPlayerConfig(player.id, 'note', '')}
+                  onChange={(value) => updatePlayerConfig(player.id, 'note', value)}
+                  readOnly={false}
+                  size={24}
+                />
               </div>
             </div>
           </div>

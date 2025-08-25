@@ -1,9 +1,9 @@
 import React from 'react';
-import { Bookmark } from 'lucide-react';
 import { theme } from '../theme/theme';
 import Input from './ui/Input';
 import RoleBadges from './ui/RoleBadge';
 import StarRating from './ui/StarRating';
+import PlayerNoteSelector from './PlayerNoteSelector';
 import { AUCTION_TEAMS } from '../hooks/useAuctionData';
 import { TEAM_COLORS } from '../constants/teamColors';
 
@@ -143,12 +143,6 @@ const AuctionPlayerRow = ({
             {index + 1}
           </div>
           
-          <Bookmark 
-            size={12} 
-            color={isAuctioned ? auctionTeamColor : theme.colors.dark.text.tertiary} // Usa il colore della squadra
-            style={{ flexShrink: 0 }}
-          />
-          
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -175,9 +169,20 @@ const AuctionPlayerRow = ({
                 fontSize: theme.typography.fontSize.sm,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
-                textOverflow: 'ellipsis'
+                textOverflow: 'ellipsis',
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing[2]
               }}>
                 {player.nome}
+                
+                {/* PlayerNoteSelector posizionato alla destra del nome in modalità read-only */}
+                <PlayerNoteSelector
+                  value={getPlayerConfig(player.id, 'note', '')}
+                  onChange={() => {}} // Vuota perché è read-only
+                  readOnly={true}
+                  size={20}
+                />
               </div>
             </div>
           </div>
@@ -299,7 +304,6 @@ const AuctionPlayerRow = ({
               fontSize: theme.typography.fontSize.xs,
               fontWeight: theme.typography.fontWeight.semibold,
               fontFamily: 'Manrope',
-              border: '0'
             }}
           />
         </div>
